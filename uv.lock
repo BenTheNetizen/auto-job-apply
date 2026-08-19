@@ -34,6 +34,32 @@ wheels = [
 ]
 
 [[package]]
+name = "auto-job-apply"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "colorlog" },
+    { name = "dynaconf" },
+    { name = "fastapi" },
+    { name = "psycopg2-binary" },
+    { name = "sqlalchemy" },
+    { name = "uvicorn", extra = ["standard"] },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "colorlog", specifier = ">=6.9.0" },
+    { name = "dynaconf", specifier = ">=3.2.12" },
+    { name = "fastapi", specifier = ">=0.115.0" },
+    { name = "psycopg2-binary", specifier = ">=2.9.10" },
+    { name = "sqlalchemy", specifier = ">=2.0.36" },
+    { name = "uvicorn", extras = ["standard"], specifier = ">=0.34.0" },
+]
+
+[package.metadata.requires-dev]
+dev = []
+
+[[package]]
 name = "click"
 version = "8.4.2"
 source = { registry = "https://pypi.org/simple" }
@@ -211,32 +237,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/cd/63/9496c57188a2ee585
 wheels = [
     { url = "https://files.pythonhosted.org/packages/1e/5e/d4e9f1a599fb8e573b7b87160658329fbf28d19eac2718f51fc3def3aa5a/idna-3.18-py3-none-any.whl", hash = "sha256:7f952cbe720b688055e3f87de14f5c3e5fdaa8bc3928985c4077ca689de849a2", size = 65455 },
 ]
-
-[[package]]
-name = "package-name"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "colorlog" },
-    { name = "dynaconf" },
-    { name = "fastapi" },
-    { name = "psycopg2-binary" },
-    { name = "sqlalchemy" },
-    { name = "uvicorn", extra = ["standard"] },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "colorlog", specifier = ">=6.9.0" },
-    { name = "dynaconf", specifier = ">=3.2.12" },
-    { name = "fastapi", specifier = ">=0.115.0" },
-    { name = "psycopg2-binary", specifier = ">=2.9.10" },
-    { name = "sqlalchemy", specifier = ">=2.0.36" },
-    { name = "uvicorn", extras = ["standard"], specifier = ">=0.34.0" },
-]
-
-[package.metadata.requires-dev]
-dev = []
 
 [[package]]
 name = "psycopg2-binary"

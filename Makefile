@@ -10,7 +10,7 @@ sync: ## Install dependencies with uv
 	uv sync
 
 run: ## Run the package entrypoint
-	uv run package_name
+	uv run auto_job_apply
 
 docker-build: ## Build the Docker image
-	docker build -t package_name .
+	docker build -t auto_job_apply .

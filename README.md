@@ -23,7 +23,7 @@ uv sync
 uv run my_app
 ```
 
-`setup` renames `package_name` everywhere and sets the Dynaconf `envvar_prefix`.
+`setup` renames `auto_job_apply` everywhere and sets the Dynaconf `envvar_prefix`.
 
 ## Config
 

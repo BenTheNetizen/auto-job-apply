@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "package_name"
+name = "auto_job_apply"
 version = "0.1.0"
 description = "Python package template"
 requires-python = ">=3.12"
@@ -17,10 +17,10 @@ dependencies = [
 ]
 
 [project.scripts]
-package_name = "package_name.__main__:main"
+auto_job_apply = "auto_job_apply.__main__:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/package_name"]
+packages = ["src/auto_job_apply"]
 
 [tool.uv]
 dev-dependencies = []

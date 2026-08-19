@@ -29,4 +29,4 @@ COPY pyproject.toml ./
 
 EXPOSE 8000
 
-CMD ["python", "-m", "package_name"]
+CMD ["python", "-m", "auto_job_apply"]

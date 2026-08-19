@@ -4,8 +4,8 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
-PLACEHOLDER_PKG="package_name"
-PLACEHOLDER_PASCAL="PackageName"
+PLACEHOLDER_PKG="auto_job_apply"
+PLACEHOLDER_PASCAL="AutoJobApply"
 PLACEHOLDER_PREFIX="PKG"
 
 read -r -p "Package name (snake_case, e.g. demo_app): " PACKAGE_NAME

@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from package_name.config import settings
-from package_name.logging import logger
+from auto_job_apply.config import settings
+from auto_job_apply.logging import logger
 
-server = FastAPI(title="package_name")
+server = FastAPI(title="auto_job_apply")
 
 _cors = settings.get("API.cors", ["*"])
 server.add_middleware(

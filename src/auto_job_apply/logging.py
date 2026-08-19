@@ -16,7 +16,7 @@ _handler.setFormatter(
     )
 )
 
-logger = logging.getLogger("package_name")
+logger = logging.getLogger("auto_job_apply")
 logger.setLevel(logging.INFO)
 logger.handlers.clear()
 logger.addHandler(_handler)

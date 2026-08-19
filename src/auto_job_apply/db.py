@@ -1,9 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 
-from package_name.config import settings
-from package_name.errors import PackageNameError
-from package_name.logging import logger
+from auto_job_apply.config import settings
+from auto_job_apply.errors import AutoJobApplyError
+from auto_job_apply.logging import logger
 
 _db_url = settings.get("DB.url")
 
@@ -18,7 +18,7 @@ else:
 
 def get_engine() -> Engine:
     if engine is None:
-        raise PackageNameError(
+        raise AutoJobApplyError(
             "Database is not configured. Set DB.url in config or via env "
             "(e.g. PKG_DB__URL)."
         )

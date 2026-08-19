@@ -1,6 +1,6 @@
 # Agent guide
 
-Run `make setup` once after cloning so package and env-prefix placeholders are renamed. Do not leave `package_name` / `PKG` in a working project.
+Run `make setup` once after cloning so package and env-prefix placeholders are renamed. Do not leave `auto_job_apply` / `PKG` in a working project.
 
 ## Layout
 

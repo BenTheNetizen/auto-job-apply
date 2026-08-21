@@ -12,9 +12,9 @@ Poll the AgentMail inbox (`taylor.wong@agentmail.to` in all verification; never 
 - Dedupe on `message_id` via a processed-ledger CSV; crashes mid-loop must not reprocess updates.
 
 ## Children
-- [status-parser](./status-parser.md) — email → `{status, confidence, raw_snippet}` (rules first, LLM fallback)
-- [replay-safety](./replay-safety.md) — processed-message ledger
-- [agentmail-poll](./agentmail-poll.md) — poll loop, match, update, mark-read
+- [status-parser](./status-parser-IN_REVIEW.md) — email → `{status, confidence, raw_snippet}` (rules first, LLM fallback)
+- [replay-safety](./replay-safety-IN_REVIEW.md) — processed-message ledger
+- [agentmail-poll](./agentmail-poll-IN_REVIEW.md) — poll loop, match, update, mark-read
 
 ## Dependencies
 - [shared-infra/config-surface](../shared-infra/config-surface-IN_REVIEW.md)

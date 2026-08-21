@@ -371,3 +371,101 @@ class TestAppendStatusHelper:
             path=tmp_path / "applications.csv",
         )
         assert ok is False
+
+    def test_append_status_history_only_keeps_top_level(
+        self, tmp_path: Path
+    ) -> None:
+        apps = tmp_path / "applications.csv"
+        _seed_app(apps)
+        ok = append_status(
+            "app-1",
+            StatusEvent(
+                status="unknown",
+                source="email",
+                raw_snippet="ambiguous",
+                at=__import__("datetime").datetime.now(
+                    __import__("datetime").timezone.utc
+                ),
+            ),
+            path=apps,
+            update_top_level=False,
+        )
+        assert ok is True
+        row = applications_store(apps).get("app-1")
+        assert row is not None and row.status == "submitted"  # untouched
+        assert [e.status for e in row.status_history_json] == ["unknown"]
+
+    def test_append_status_history_is_atomic_across_threads(
+        self, tmp_path: Path
+    ) -> None:
+        """Concurrent appends must not lose history events (lost-update race)."""
+        import threading
+
+        apps = tmp_path / "applications.csv"
+        _seed_app(apps)
+        per_thread = 25
+
+        def writer(tag: str) -> None:
+            for i in range(per_thread):
+                assert append_status(
+                    "app-1",
+                    StatusEvent(
+                        status=f"{tag}-{i}",
+                        source="email",
+                        at=__import__("datetime").datetime.now(
+                            __import__("datetime").timezone.utc
+                        ),
+                    ),
+                    path=apps,
+                )
+
+        threads = [
+            threading.Thread(target=writer, args=(f"w{n}",)) for n in range(2)
+        ]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+
+        row = applications_store(apps).get("app-1")
+        assert row is not None
+        assert len(row.status_history_json) == 2 * per_thread
+
+
+class TestUnknownStatusKeepsRow:
+    """LLM 'unknown' (confidence>0) appends history but preserves status."""
+
+    def test_unknown_appends_history_without_status_overwrite(
+        self, paths: dict[str, Path], monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from auto_job_apply.services import status_parser
+
+        monkeypatch.setattr(
+            email_monitor,
+            "parse",
+            lambda s, b: status_parser.ParsedStatus(
+                status=status_parser.ApplicationStatus.unknown,
+                confidence=0.7,
+                raw_snippet="ambiguous snippet",
+            ),
+        )
+        _seed_app(paths["apps"])
+        msg = IncomingMessage(
+            message_id="amb-1",
+            subject="quick update",
+            text="something vague",
+            from_address="jane@acme.com",
+        )
+        client = FakeClient([])
+        result = handle_message(
+            msg,
+            client=client,
+            inbox_id="taylor.wong@agentmail.to",
+            ledger_path=paths["ledger"],
+            apps_path=paths["apps"],
+        )
+        assert result.outcome == "updated"
+        row = applications_store(paths["apps"]).get("app-1")
+        assert row is not None
+        assert row.status == "submitted"  # NOT clobbered by 'unknown'
+        assert [e.status for e in row.status_history_json] == ["unknown"]

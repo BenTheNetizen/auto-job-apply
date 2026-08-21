@@ -61,24 +61,35 @@ def applications_store(path: str | Path | None = None) -> CsvStore[ApplicationsR
 
 
 def append_status(
-    app_id: str, event: StatusEvent, *, path: str | Path | None = None
+    app_id: str,
+    event: StatusEvent,
+    *,
+    path: str | Path | None = None,
+    update_top_level: bool = True,
 ) -> bool:
     """Append ``event`` to an application's history and set its top-level status.
 
-    Read-modify-write under the store's file lock. Returns False when no
-    application with ``app_id`` exists (caller decides what unmatched means).
+    The history append is atomic per-event via ``CsvStore.append_event``
+    (the file lock is held across the read-modify-write), so concurrent
+    writers cannot lose events. The top-level ``status`` column is a scalar
+    last-write-wins update applied afterwards; pass
+    ``update_top_level=False`` to append history only (e.g. an ambiguous
+    classification that must not clobber a good status).
+
+    Returns False when no application with ``app_id`` exists (caller
+    decides what unmatched means).
     """
     store = applications_store(path)
-    row = store.get(app_id)
-    if row is None:
+    try:
+        store.append_event(app_id, "status_history_json", event)
+    except KeyError:
         return False
-    history = [*row.status_history_json, event]
-    return store.update(
-        app_id,
-        row.model_copy(
-            update={"status": event.status, "status_history_json": history}
-        ),
-    )
+    if update_top_level:
+        row = store.get(app_id)
+        if row is None:  # row vanished between the two ops
+            return False
+        store.update(app_id, row.model_copy(update={"status": event.status}))
+    return True
 
 
 __all__ = [

@@ -199,7 +199,20 @@ def handle_message(
         raw_snippet=parsed.raw_snippet,
         at=datetime.now(timezone.utc),
     )
-    if not append_status(app.id, event, path=apps_path):
+    update_top_level = parsed.status is not ApplicationStatus.unknown
+    if not update_top_level:
+        # Ambiguous LLM classification (unknown, confidence>0): record the
+        # event in history but never clobber the row's top-level status.
+        logger.warning(
+            "message %s classified as unknown (confidence=%.2f); appending "
+            "history only, leaving top-level status %r",
+            msg.message_id,
+            parsed.confidence,
+            app.status,
+        )
+    if not append_status(
+        app.id, event, path=apps_path, update_top_level=update_top_level
+    ):
         raise EmailPollError(
             f"matched application {app.id} vanished before status update",
             context={"message_id": msg.message_id, "application_id": app.id},

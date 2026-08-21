@@ -197,24 +197,36 @@ class ApiReviewClient:
         import httpx  # local import: eval-lane dependency
         from auto_job_apply.server import server
 
-        self._client = httpx.Client(
-            transport=httpx.ASGITransport(app=server), base_url="http://testserver"
-        )
+        # Sync ASGITransport requires handle_request; only async is supported
+        # on this httpx version. Wrap the async client behind asyncio.run so
+        # the ReviewClient sync protocol stays intact.
+        self._transport = httpx.ASGITransport(app=server)
+
+    def _run(self, coro):
+        import asyncio
+
+        return asyncio.run(coro)
+
+    def _request(self, method: str, path: str, json: dict):
+        import httpx
+
+        async def _do():
+            async with httpx.AsyncClient(
+                transport=self._transport, base_url="http://testserver"
+            ) as client:
+                return await client.request(method, path, json=json)
+
+        res = self._run(_do())
+        res.raise_for_status()
 
     def patch_field(self, application_id: str, field_key: str, value: str) -> None:
-        res = self._client.patch(
-            f"/applications/{application_id}/fields",
-            json={"field_key": field_key, "value": value},
-        )
-        res.raise_for_status()
+        self._request("PATCH", f"/applications/{application_id}/fields", {"field_key": field_key, "value": value})
 
     def confirm(self, application_id: str) -> None:
-        res = self._client.post(f"/applications/{application_id}/confirm", json={})
-        res.raise_for_status()
+        self._request("POST", f"/applications/{application_id}/confirm", {})
 
     def submit(self, application_id: str) -> None:
-        res = self._client.post(f"/applications/{application_id}/submit", json={})
-        res.raise_for_status()
+        self._request("POST", f"/applications/{application_id}/submit", {})
 
 
 class StubReviewClient:
@@ -371,6 +383,8 @@ def _deterministic_review(
     application_id: str,
     answered_keys: set[str],
     review: ReviewClient,
+    form: Any,
+    filled_needs_review: bool,
 ) -> None:
     """Agent-as-human: patch any unanswered required field, then confirm.
 
@@ -378,8 +392,13 @@ def _deterministic_review(
     no LLM draft materialized; other required gaps get the gold expected
     value (the human reviewer supplies what the pipeline could not).
     """
+    def _norm(label: str) -> str:
+        return label.replace("*", "").strip().lower()
+
+    label_to_key = {_norm(f.label): f.key for f in form.fields}
     for gf in gold.fields:
-        if not gf.required or gf.key in answered_keys:
+        fk = label_to_key.get(_norm(gf.label), gf.key)
+        if not gf.required or fk in answered_keys:
             continue
         value = (
             human_stub_answer(gf.label)
@@ -390,8 +409,19 @@ def _deterministic_review(
                 else "|".join(str(v) for v in gf.expected)
             )
         )
-        review.patch_field(application_id, gf.key, value)
-    review.confirm(application_id)
+        review.patch_field(application_id, fk, value)
+    # Confirm only when the filler left it in needs_review; a row already
+    # ready_to_submit needs no human action (Decision #4 fail-safe).
+    if filled_needs_review:
+        review.confirm(application_id)
+
+
+def _row_status(application_id: str) -> str | None:
+    """Current top-level status of the application row (None if absent)."""
+    from auto_job_apply.services.applications import applications_store
+
+    row = applications_store().get(application_id)
+    return row.status if row else None
 
 
 def run(cases: list[str], review: ReviewClient, *, keep_data_dir: Path | None = None) -> dict[str, Any]:
@@ -416,7 +446,10 @@ def run(cases: list[str], review: ReviewClient, *, keep_data_dir: Path | None = 
             filled = fill(url, plan, application_id)
             answered = {f.key for f in filled.fields if f.answer}
 
-            _deterministic_review(gold, application_id, answered, review)
+            _deterministic_review(
+                gold, application_id, answered, review, filled,
+                filled_needs_review=_row_status(application_id) == "needs_review",
+            )
             review.submit(application_id)
 
             # The dev-server records the submission synchronously on POST;

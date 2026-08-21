@@ -15,3 +15,4 @@ venv/
 .pytest_cache/
 *.local.json
 /local/
+evals/results/

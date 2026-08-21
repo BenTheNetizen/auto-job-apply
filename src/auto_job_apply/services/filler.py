@@ -152,7 +152,15 @@ def _fill_field(page: Any, field: Field, value: str, resume_path: str | None) ->
         control.first.select_option(label=value)
         return True
     if field.type == "radio":
-        option = page.get_by_role("radio", name=value)
+        # Scope to the field's own group first (fieldset with matching legend)
+        # so same-value options across different groups don't collide.
+        import re as _re
+
+        group = page.get_by_role("group", name=_re.compile(_re.escape(field.label.replace("*", "").strip()), _re.IGNORECASE))
+        if group.count() > 0:
+            option = group.first.get_by_role("radio", name=value)
+        else:
+            option = page.get_by_role("radio", name=value)
         if option.count() == 0:
             logger.warning("filler: no radio option %r for %r", value, field.label)
             return False

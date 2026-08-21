@@ -42,6 +42,8 @@ class TestLlmFallback:
         runnable.invoke.return_value = _Result("veteran_status")
         structured = MagicMock(return_value=runnable)
         fake_llm.structured = structured  # type: ignore[attr-defined]
+        get_llm = MagicMock()
+        fake_llm.get_llm = get_llm  # type: ignore[attr-defined]
 
         with patch.dict(sys.modules, {"auto_job_apply.services.llm": fake_llm}):
             assert learning.canonicalize("veteran-unmapped-input") == "veteran_status"

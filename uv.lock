@@ -55,6 +55,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "agentmail" },
+    { name = "click" },
     { name = "colorlog" },
     { name = "dynaconf" },
     { name = "fastapi" },
@@ -81,6 +82,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "agentmail", specifier = ">=0.5.9" },
+    { name = "click", specifier = ">=8.4.2" },
     { name = "colorlog", specifier = ">=6.9.0" },
     { name = "dynaconf", specifier = ">=3.2.12" },
     { name = "fastapi", specifier = ">=0.115.0" },

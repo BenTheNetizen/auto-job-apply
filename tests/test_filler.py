@@ -435,15 +435,71 @@ class TestSubmit:
         assert row is not None and row.status == "failed"
         assert "bb also down" in row.status_history_json[-1].raw_snippet
 
-    def test_error_banner_after_click_fails(
+    def test_error_banner_after_click_warns_but_does_not_retry(
         self, monkeypatch: pytest.MonkeyPatch, seam: dict[str, Any], tmp_path: Path
     ) -> None:
+        # Post-click failures are non-retryable by design: the click already
+        # hit the employer's server, so an error-banner false positive (or a
+        # snapshot failure) must NOT escalate to Browserbase (double-submit).
+        # The row lands as submitted with a warning, not failed.
+        monkeypatch.setenv("BROWSERBASE_API_KEY", "test-key")
         csv = _persist_row(tmp_path, "app-b")
         page = FakePage(content="<html>something went wrong</html>")
         _install_plugin(monkeypatch, FakePlugin())
         monkeypatch.setattr(filler, "discover_fields", lambda p, pl: [])
 
-        with pytest.raises(SubmissionError):
-            filler.submit("app-b", page_opener=_opener(page), applications_path=csv)
-        row = applications_store(csv).get("app-b")
-        assert row is not None and row.status == "failed"
+        updated = filler.submit("app-b", page_opener=_opener(page), applications_path=csv)
+        assert updated.status == "submitted"
+        # Browserbase escalation never happened (no second opener attempted).
+        assert updated.status_history_json[-1].status == "submitted"
+
+    def test_post_click_snapshot_failure_does_not_escalate(
+        self, monkeypatch: pytest.MonkeyPatch, seam: dict[str, Any], tmp_path: Path
+    ) -> None:
+        # Same non-retry contract, triggered by the submit-post snapshot.
+        monkeypatch.setenv("BROWSERBASE_API_KEY", "test-key")
+        csv = _persist_row(tmp_path, "app-snap")
+        page = FakePage(content="<html>thank you</html>")
+        _install_plugin(monkeypatch, FakePlugin())
+        monkeypatch.setattr(filler, "discover_fields", lambda p, pl: [])
+
+        calls = {"fail_at": 0}
+        real_snapshot = artifacts.snapshot_page
+
+        def flaky_snapshot(app_id, p, prefix):
+            calls["fail_at"] += 1
+            if prefix == "submit-post":
+                raise OSError("disk full")
+            return real_snapshot(app_id, p, prefix)
+
+        monkeypatch.setattr(filler.artifacts, "snapshot_page", flaky_snapshot)
+
+        updated = filler.submit(
+            "app-snap", page_opener=_opener(page), applications_path=csv
+        )
+        assert updated.status == "submitted"
+
+    def test_checkbox_group_backward_tolerant_separators(
+        self, monkeypatch: pytest.MonkeyPatch, seam: dict[str, Any], tmp_path: Path
+    ) -> None:
+        # Semicolon/comma-era values still apply after the canonical `|` switch.
+        field = _field("Languages", "checkbox-group", options=["Python", "Go", "Rust"])
+        controls = {
+            ("checkbox", "Python"): FakeControl(),
+            ("checkbox", "Go"): FakeControl(),
+            ("checkbox", "Rust"): FakeControl(),
+        }
+        page = FakePage(by_role=controls)
+        assert filler._fill_field(page, field, "Python;Go", None) is True
+        assert controls[("checkbox", "Python")].ops == [("check", None)]
+        assert controls[("checkbox", "Go")].ops == [("check", None)]
+        assert controls[("checkbox", "Rust")].ops == []
+
+        page2 = FakePage(by_role={k: FakeControl() for k in controls})
+        assert filler._fill_field(page2, field, "Python,Go", None) is True
+
+    def test_multi_value_sep_is_canonical(self) -> None:
+        from auto_job_apply.services import extractor
+
+        assert extractor.MULTI_VALUE_SEP == "|"
+        assert "MULTI_VALUE_SEP" in extractor.__all__

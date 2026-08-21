@@ -178,10 +178,8 @@ def parse(subject: str, body: str) -> ParsedStatus:
     subject = subject or ""
     body = body or ""
     rule_hit = _rule_match(subject, body)
-    if rule_hit is not None and rule_hit.confidence >= LLM_CONFIDENCE_THRESHOLD:
-        return rule_hit
     if rule_hit is not None:
-        return rule_hit  # confident enough; no rule currently scores below 0.8
+        return rule_hit
     return _llm_classify(subject, body)
 
 

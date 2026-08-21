@@ -1,4 +1,4 @@
-"""Package_name package."""
+"""Auto_job_apply package."""
 
 __all__ = ["__version__"]
 

@@ -13,7 +13,7 @@ import pytest
 
 from auto_job_apply.errors import UnsupportedATSError
 from auto_job_apply.services import ats_registry
-from auto_job_apply.services.ats.lever import LeverPlugin, PLUGIN
+from auto_job_apply.services.ats.lever import LeverPlugin, plugin as lever_plugin
 
 
 POSITIVE_URLS = [
@@ -89,8 +89,8 @@ def clean_registry():
 @pytest.fixture()
 def plugin(clean_registry):
     """Re-register the real Lever plugin after registry isolation."""
-    ats_registry.register(PLUGIN)
-    return PLUGIN
+    ats_registry.register(lever_plugin)
+    return lever_plugin
 
 
 class TestDetection:
@@ -112,15 +112,15 @@ class TestDetection:
 
 class TestSelectors:
     def test_base_selectors_shape(self):
-        selectors = PLUGIN.base_selectors()
+        selectors = lever_plugin.base_selectors()
         assert all(isinstance(v, str) for v in selectors.values())
-        for key in ("form", "accordion_toggle", "label", "required_marker"):
+        for key in ("form_root", "accordion_toggle", "label", "required_marker"):
             assert key in selectors
-        assert "application-form" in selectors["form"]
+        assert "application-form" in selectors["form_root"]
 
     def test_submit_button_locator_string(self):
         page = FakePage()
-        result = PLUGIN.submit_button(page)
+        result = lever_plugin.submit_button(page)
         assert result is not None
         (selector,) = page.requested
         assert "button[type=submit]" in selector
@@ -130,20 +130,20 @@ class TestSelectors:
 class TestPreExtract:
     def test_no_toggles_is_noop(self):
         page = FakePage()
-        PLUGIN.pre_extract(page)
+        lever_plugin.pre_extract(page)
         assert page.clicked == []
 
     def test_clicks_each_toggle_once(self):
         page = FakePage(counts={".toggle": 3})
-        PLUGIN.pre_extract(page)
+        lever_plugin.pre_extract(page)
         assert page.clicked == [".toggle", ".toggle", ".toggle"]
 
     def test_click_failure_tolerated(self):
         page = FakePage(counts={".toggle": 2}, fail_nth=1)
-        PLUGIN.pre_extract(page)
+        lever_plugin.pre_extract(page)
         assert page.clicked == [".toggle"]
 
 
 class TestPostFill:
     def test_noop(self):
-        assert PLUGIN.post_fill(FakePage(), {}) is None
+        assert lever_plugin.post_fill(FakePage(), {}) is None

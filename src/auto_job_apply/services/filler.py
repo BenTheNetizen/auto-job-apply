@@ -29,6 +29,7 @@ unit tests. The DOM surface used by the filler is deliberately narrow
 from __future__ import annotations
 
 import os
+import re
 import time
 from contextlib import contextmanager
 from datetime import UTC, datetime
@@ -48,6 +49,7 @@ from auto_job_apply.services.applications import (
 )
 from auto_job_apply.services.ats_registry import ATSPlugin, plugin_for
 from auto_job_apply.services.extractor import (
+    MULTI_VALUE_SEP,
     ApplicationForm,
     Field,
     discover_fields,
@@ -154,9 +156,7 @@ def _fill_field(page: Any, field: Field, value: str, resume_path: str | None) ->
     if field.type == "radio":
         # Scope to the field's own group first (fieldset with matching legend)
         # so same-value options across different groups don't collide.
-        import re as _re
-
-        group = page.get_by_role("group", name=_re.compile(_re.escape(field.label.replace("*", "").strip()), _re.IGNORECASE))
+        group = page.get_by_role("group", name=re.compile(re.escape(field.label.replace("*", "").strip()), re.IGNORECASE))
         if group.count() > 0:
             option = group.first.get_by_role("radio", name=value)
         else:
@@ -178,7 +178,13 @@ def _fill_field(page: Any, field: Field, value: str, resume_path: str | None) ->
         return True
     if field.type == "checkbox-group":
         applied = False
-        wanted = {v.strip().lower() for v in value.split("|") if v.strip()}
+        # Canonical separator is MULTI_VALUE_SEP ("|"); tolerate "," and ";"
+        # for values written before the convention was enforced.
+        wanted = {
+            v.strip().lower()
+            for v in re.split(r"[|,;]", value)
+            if v.strip()
+        }
         for option in field.options or []:
             if option.strip().lower() in wanted:
                 page.get_by_role("checkbox", name=option).first.check()
@@ -244,20 +250,29 @@ def fill(
         fields = discover_fields(page, plugin)
         unfilled: list[str] = []
         for field in fields:
-            value = answers.get(field.key)
-            if value is None:
-                # File fields default to the profile resume path; the
-                # planner has nothing useful to say about uploads.
-                if field.type == "file" and resume_path:
-                    if _fill_field(page, field, "", resume_path):
-                        field.answer = resume_path
-                continue
-            if _fill_field(page, field, value, resume_path):
-                field.answer = value
-            else:
+            try:
+                value = answers.get(field.key)
+                if value is None:
+                    # File fields default to the profile resume path; the
+                    # planner has nothing useful to say about uploads.
+                    if field.type == "file" and resume_path:
+                        if _fill_field(page, field, "", resume_path):
+                            field.answer = resume_path
+                    continue
+                if _fill_field(page, field, value, resume_path):
+                    field.answer = value
+                else:
+                    unfilled.append(field.key)
+            except Exception as exc:  # noqa: BLE001 — one bad control never aborts the fill
+                logger.warning(
+                    "filler: failed to fill %r (%s): %s", field.label, field.type, exc
+                )
                 unfilled.append(field.key)
         plugin.post_fill(page, answers)
-        artifacts.snapshot_page(application_id, page, "fill")
+        try:
+            artifacts.snapshot_page(application_id, page, "fill")
+        except Exception as exc:  # noqa: BLE001 — artifacts must never abort a fill
+            logger.warning("filler: fill snapshot failed for %s: %s", application_id, exc)
 
     status = "needs_review" if (plan.review_required or unfilled_required(fields, plan, unfilled)) else "ready_to_submit"
     row = ApplicationsRow(
@@ -369,15 +384,32 @@ def _submit_once(
         plugin.post_fill(page, answers)
         artifacts.snapshot_page(application_id, page, "submit-pre")
         plugin.submit_button(page).first.click()
-        _await_confirmation(page)
-        artifacts.snapshot_page(application_id, page, "submit-post")
+        # Post-click failures are non-retryable: the click already hit the
+        # employer's server, so escalating to Browserbase would double-submit.
+        # Confirmation artifacts are best-effort evidence only.
+        try:
+            _await_confirmation(page)
+        except Exception as exc:  # noqa: BLE001 — click already landed; warn, never retry
+            logger.warning(
+                "filler: post-click confirmation check failed for %s (submission may already be on the employer server): %s",
+                application_id,
+                exc,
+            )
+        try:
+            artifacts.snapshot_page(application_id, page, "submit-post")
+        except Exception as exc:  # noqa: BLE001 — post-click artifact failure must not escalate
+            logger.warning(
+                "filler: submit-post snapshot failed for %s: %s", application_id, exc
+            )
 
 
 def _await_confirmation(page: Any) -> None:
     """Best-effort post-submit confirmation: settle, then look for success text.
 
-    Lenient by design — mock sites record the POST without navigating — but a
-    hard click error or an explicit error banner still fails the attempt.
+    Lenient by design — mock sites record the POST without navigating. A
+    detected error banner raises :class:`SubmissionError`, but the caller
+    treats every post-click failure as non-retryable (the click already hit
+    the employer's server), so this only surfaces as a warning upstream.
     """
     try:
         page.wait_for_load_state("networkidle")

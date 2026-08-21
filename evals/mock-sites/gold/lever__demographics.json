@@ -1,0 +1,15 @@
+{
+  "case": "lever/demographics",
+  "title": "Data Engineer — Riverstone Data (Lever)",
+  "fields": [
+    { "key": "full_name", "label": "Full Name", "type": "text", "required": true, "expected": "Taylor Wong" },
+    { "key": "email", "label": "Email", "type": "text", "required": true, "expected": "taylor.wong@agentmail.to" },
+    { "key": "resume", "label": "Resume", "type": "file", "required": true, "expected": "Taylor Wong Resume.pdf" },
+    { "key": "interests", "label": "Which areas interest you? (select all that apply)", "type": "checkbox-group", "required": false, "expected": ["Backend", "Machine Learning"] },
+    { "key": "referral_source", "label": "How did you hear about us?", "type": "select", "required": true, "expected": "Job board" },
+    { "key": "veteran_status", "label": "Veteran Status", "type": "select", "required": false, "expected": "I am not a protected veteran" },
+    { "key": "disability_status", "label": "Disability Status", "type": "select", "required": false, "expected": "No, I do not have a disability" },
+    { "key": "gender", "label": "Gender", "type": "select", "required": false, "expected": "Male" },
+    { "key": "why_fit", "label": "Why are you a good fit for this role?", "type": "textarea", "required": true, "expected": "@generated@" }
+  ]
+}

@@ -1,0 +1,78 @@
+body {
+  font-family: -apple-system, sans-serif;
+  max-width: 720px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+.field {
+  margin-bottom: 1rem;
+}
+.field label,
+.field legend {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+.field input[type="text"],
+.field textarea,
+.field select,
+.field input[type="date"] {
+  width: 100%;
+  padding: 0.4rem;
+  box-sizing: border-box;
+}
+fieldset.field label {
+  display: inline-block;
+  font-weight: 400;
+  margin-right: 1rem;
+}
+.cookie-banner {
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+.toggle {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0.5rem 0;
+  user-select: none;
+}
+.accordion-body {
+  padding-left: 1rem;
+  border-left: 2px solid #ddd;
+}
+.select2-container {
+  border: 1px solid #aaa;
+  padding: 0.4rem;
+  cursor: pointer;
+  background: #fff;
+}
+.select2-dropdown {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #aaa;
+  background: #fff;
+}
+.select2-results__option {
+  padding: 0.4rem;
+  cursor: pointer;
+}
+.select2-results__option:hover {
+  background: #e8f0fe;
+}
+.confirmation {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #e6f4ea;
+  border: 1px solid #34a853;
+}
+button[type="submit"],
+input[type="submit"] {
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+}

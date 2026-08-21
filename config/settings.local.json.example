@@ -1,4 +1,5 @@
 {
+  "_README": "Local overrides only (gitignored). Copy to settings.local.json. Secrets belong in the process env or .env, NEVER in settings.json: OPENROUTER_API_KEY (LLM via OpenRouter), BROWSERBASE_API_KEY (browser escalation), AGENTMAIL_API_KEY (email inbox), LANGFUSE_PUBLIC_KEY / LANGFUSE_SECRET_KEY / LANGFUSE_BASE_URL (tracing). Nested env overrides use __, e.g. AUTO_JOB_APPLY_LLM__MODEL=anthropic/claude-sonnet-4.",
   "dynaconf_merge": true,
   "default": {
     "API": {

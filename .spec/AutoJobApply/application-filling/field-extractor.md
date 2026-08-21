@@ -19,7 +19,7 @@ Walk a live form in Playwright and emit a normalized `ApplicationForm` with ever
 
 ## Dependencies
 - [./ats-registry-IN_REVIEW.md](./ats-registry-IN_REVIEW.md)
-- [./ats-plugins/ashby.md](./ats-plugins/ashby.md), [./ats-plugins/greenhouse.md](./ats-plugins/greenhouse.md), [./ats-plugins/lever.md](./ats-plugins/lever.md)
+- [./ats-plugins/ashby-IN_REVIEW.md](./ats-plugins/ashby-IN_REVIEW.md), [./ats-plugins/greenhouse-IN_REVIEW.md](./ats-plugins/greenhouse-IN_REVIEW.md), [./ats-plugins/lever-IN_REVIEW.md](./ats-plugins/lever-IN_REVIEW.md)
 - [../shared-infra/errors-artifacts-IN_REVIEW.md](../shared-infra/errors-artifacts-IN_REVIEW.md)
 
 ## Acceptance Criteria

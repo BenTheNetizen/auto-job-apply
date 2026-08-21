@@ -264,3 +264,17 @@ class TestIntegrationRealProfile:
         plan = plan_answers(form, drafter=_fail_drafter)
         assert plan.answers[0].value == "Taylor Wong"
         assert plan.answers[0].source == "profile"
+
+
+class TestProfileLookupDegrades:
+    """B1 regression: learning.suggest raising must not crash the whole plan."""
+
+    def test_suggest_raises_plan_still_returns(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        def boom(label: str) -> None:
+            raise RuntimeError("boom")
+
+        monkeypatch.setattr(learning, "suggest", boom)
+        form = _form(_field("name", "text", required=True))
+        plan = plan_answers(form, page_text="", drafter=lambda f, prompt: FieldDraft(value="drafted", confidence=0.7))
+        assert plan is not None
+        assert plan.answers[0].value == "drafted"

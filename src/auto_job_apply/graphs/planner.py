@@ -78,7 +78,11 @@ def _try_profile(state: _PlannerState) -> dict[str, Any]:
     for field in state["form"].fields:
         if field.key in answers:
             continue
-        hit = learning.suggest(field.label)
+        try:
+            hit = learning.suggest(field.label)
+        except Exception:  # noqa: BLE001 — profile lookup must degrade like drafting
+            logger.warning("planner: profile lookup failed for %r", field.label)
+            hit = None
         if hit:
             answers[field.key] = FieldAnswer(
                 field_key=field.key, value=hit, source="profile", confidence=1.0

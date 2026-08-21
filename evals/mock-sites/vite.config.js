@@ -2,6 +2,9 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirnameFix = import.meta.dirname ?? path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Dev-server plugin: POST /submit records the JSON payload to
@@ -12,7 +15,8 @@ function submitRecorder() {
   return {
     name: "submit-recorder",
     configureServer(server) {
-      server.middlewares.use("/submit", (req, res) => {
+      server.middlewares.use((req, res, next) => {
+        if (!req.url || !req.url.startsWith("/submit")) return next();
         if (req.method !== "POST") {
           res.statusCode = 405;
           res.end("method not allowed");
@@ -23,7 +27,7 @@ function submitRecorder() {
         req.on("end", () => {
           try {
             const payload = JSON.parse(body);
-            const dir = path.resolve(__dirname, "submissions");
+            const dir = path.resolve(__dirnameFix, "submissions");
             fs.mkdirSync(dir, { recursive: true });
             const safe = String(payload.applicationId).replace(/[^a-z0-9/_-]/gi, "").replace("/", "__");
             fs.writeFileSync(

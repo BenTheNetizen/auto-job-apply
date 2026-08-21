@@ -1,0 +1,60 @@
+{
+  "veteran_status": [
+    "veteran",
+    "protected veteran",
+    "veteran status",
+    "are you a protected veteran",
+    "military status"
+  ],
+  "disability_status": [
+    "disability",
+    "disability status",
+    "do you have a disability"
+  ],
+  "gender_identity": [
+    "gender",
+    "gender identity",
+    "what is your gender"
+  ],
+  "visa_sponsorship": [
+    "visa sponsorship",
+    "require visa sponsorship",
+    "will you now or in the future require sponsorship",
+    "sponsorship required"
+  ],
+  "work_authorization": [
+    "work authorization",
+    "authorized to work",
+    "are you legally authorized to work in the us",
+    "us work authorization"
+  ],
+  "race_ethnicity": [
+    "race",
+    "ethnicity",
+    "race ethnicity"
+  ],
+  "lgbtq_status": [
+    "sexuality",
+    "sexual orientation",
+    "lgbtq status"
+  ],
+  "preferred_pronouns": [
+    "pronouns",
+    "preferred pronouns"
+  ],
+  "relocate_willing": [
+    "willing to relocate",
+    "are you willing to relocate",
+    "relocation"
+  ],
+  "start_date": [
+    "start date",
+    "earliest start date",
+    "when can you start"
+  ],
+  "salary_expectations": [
+    "salary",
+    "salary expectations",
+    "compensation expectations"
+  ]
+}

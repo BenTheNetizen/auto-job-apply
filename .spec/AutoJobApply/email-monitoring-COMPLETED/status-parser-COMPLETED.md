@@ -16,7 +16,7 @@ Classify a recruiter email into application status with confidence, first determ
 - Pure function; no I/O.
 
 ## Dependencies
-- [../shared-infra/llm-openrouter-IN_REVIEW.md](../shared-infra/llm-openrouter-IN_REVIEW.md)
+- [../shared-infra-COMPLETED/llm-openrouter-COMPLETED.md](../shared-infra-COMPLETED/llm-openrouter-COMPLETED.md)
 
 ## Acceptance Criteria
 - Rules handle ≥85% of seeded fixture emails; LLM path covered by mocked call on edge cases.

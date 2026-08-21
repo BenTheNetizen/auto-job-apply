@@ -12,11 +12,11 @@ Cross-cutting plumbing every subsystem depends on: Dynaconf config schema, the P
 - Langfuse handler factory is created here; LangGraph/LangChain code in `src/auto_job_apply/graphs/` receives it via config.
 
 ## Children
-- [config-surface](./config-surface-IN_REVIEW.md) — settings.json schema + env wiring + validation
-- [errors-artifacts](./errors-artifacts-IN_REVIEW.md) — error taxonomy + artifact (screenshot/HTML) writer
-- [csv-store](./csv-store-IN_REVIEW.md) — generic Pydantic-row CSV engine
-- [langfuse-tracing](./langfuse-tracing-IN_REVIEW.md) — client init + callback factory + flush
-- [llm-openrouter](./llm-openrouter-IN_REVIEW.md) — chat client, structured output helper, usage logging
+- [config-surface](./config-surface-COMPLETED.md) — settings.json schema + env wiring + validation
+- [errors-artifacts](./errors-artifacts-COMPLETED.md) — error taxonomy + artifact (screenshot/HTML) writer
+- [csv-store](./csv-store-COMPLETED.md) — generic Pydantic-row CSV engine
+- [langfuse-tracing](./langfuse-tracing-COMPLETED.md) — client init + callback factory + flush
+- [llm-openrouter](./llm-openrouter-COMPLETED.md) — chat client, structured output helper, usage logging
 
 ## Dependencies
 - None (this subsystem is the base of the DAG).

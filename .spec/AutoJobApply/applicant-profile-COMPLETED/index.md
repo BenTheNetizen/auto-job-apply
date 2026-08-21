@@ -12,9 +12,9 @@ The applicant's canonical answer store: name, email, resume path, and self-learn
 - Question canonicalization (label → stable `question_key`) is deterministic-first, LLM-second, and only the planner writes authoritative rows through the self-learning store.
 
 ## Children
-- [profile-csv](./profile-csv-IN_REVIEW.md) — `applicant_profile.csv` model + CRUD service
-- [self-learning-store](./self-learning-store-IN_REVIEW.md) — canonicalization + write-back of edited/confirmed answers
+- [profile-csv](./profile-csv-COMPLETED.md) — `applicant_profile.csv` model + CRUD service
+- [self-learning-store](./self-learning-store-COMPLETED.md) — canonicalization + write-back of edited/confirmed answers
 
 ## Dependencies
-- [shared-infra/csv-store](../shared-infra/csv-store-IN_REVIEW.md)
-- [shared-infra/llm-openrouter](../shared-infra/llm-openrouter-IN_REVIEW.md)
+- [shared-infra-COMPLETED/csv-store](../shared-infra-COMPLETED/csv-store-COMPLETED.md)
+- [shared-infra-COMPLETED/llm-openrouter](../shared-infra-COMPLETED/llm-openrouter-COMPLETED.md)

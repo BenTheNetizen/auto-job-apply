@@ -15,7 +15,7 @@ Greenhouse-specific selectors + quirks.
 - Document any select2 shadow-DOM strategy as fallback only.
 
 ## Dependencies
-- [../ats-registry-IN_REVIEW.md](../ats-registry-IN_REVIEW.md)
+- [../ats-registry-COMPLETED.md](../ats-registry-COMPLETED.md)
 
 ## Acceptance Criteria
 - Registry routes `https://boards.greenhouse.io/<org>/<id>` here.

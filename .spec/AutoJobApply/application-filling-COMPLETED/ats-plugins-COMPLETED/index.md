@@ -7,9 +7,9 @@
 Per-ATS selector/quirk knowledge only. Extraction/planning/submission stay in shared leaves; these plugins tell the extractor *where* to look and the submitter *what to click*.
 
 ## Children
-- [ashby](./ashby.md)
-- [greenhouse](./greenhouse.md)
-- [lever](./lever.md)
+- [ashby](./ashby-COMPLETED.md)
+- [greenhouse](./greenhouse-COMPLETED.md)
+- [lever](./lever-COMPLETED.md)
 
 ## Dependencies
-- [../ats-registry-IN_REVIEW.md](../ats-registry-IN_REVIEW.md) — the contract + dispatcher.
+- [../ats-registry-COMPLETED.md](../ats-registry-COMPLETED.md) — the contract + dispatcher.

@@ -15,10 +15,10 @@ Turn an `ApplicationForm` + applicant profile into an `AnswerPlan`: each field a
 - Edge: `extract(url)` may time out partially — planner still attempts found fields.
 
 ## Dependencies
-- [./field-extractor-IN_REVIEW.md](./field-extractor-IN_REVIEW.md),
-- [../applicant-profile/profile-csv-IN_REVIEW.md](../applicant-profile/profile-csv-IN_REVIEW.md),
-- [../applicant-profile/self-learning-store-IN_REVIEW.md](../applicant-profile/self-learning-store-IN_REVIEW.md),
-- [../shared-infra/llm-openrouter-IN_REVIEW.md](../shared-infra/llm-openrouter-IN_REVIEW.md).
+- [./field-extractor-COMPLETED.md](./field-extractor-COMPLETED.md),
+- [../applicant-profile-COMPLETED/profile-csv-COMPLETED.md](../applicant-profile-COMPLETED/profile-csv-COMPLETED.md),
+- [../applicant-profile-COMPLETED/self-learning-store-COMPLETED.md](../applicant-profile-COMPLETED/self-learning-store-COMPLETED.md),
+- [../shared-infra-COMPLETED/llm-openrouter-COMPLETED.md](../shared-infra-COMPLETED/llm-openrouter-COMPLETED.md).
 
 ## Acceptance Criteria
 - Given profile answers for seed keys and LLM available, all answerable required fields get values; unanswerable → `missing_required` with label.

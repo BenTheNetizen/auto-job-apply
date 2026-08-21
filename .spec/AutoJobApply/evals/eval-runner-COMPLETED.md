@@ -15,10 +15,10 @@ Run the real filler against the mock sites, score required-field completion and 
 - Exit code non-zero if overall `required_completion < 1.0` — this is the hill-climb gate.
 
 ## Dependencies
-- [./mock-sites-IN_REVIEW.md](./mock-sites-IN_REVIEW.md),
-- [../application-filling/filler-submitter-IN_REVIEW.md](../application-filling/filler-submitter-IN_REVIEW.md),
-- [../application-filling/review-api-cli-IN_REVIEW.md](../application-filling/review-api-cli-IN_REVIEW.md),
-- [../shared-infra/langfuse-tracing-IN_REVIEW.md](../shared-infra/langfuse-tracing-IN_REVIEW.md).
+- [./mock-sites-COMPLETED.md](./mock-sites-COMPLETED.md),
+- [../application-filling-COMPLETED/filler-submitter-COMPLETED.md](../application-filling-COMPLETED/filler-submitter-COMPLETED.md),
+- [../application-filling-COMPLETED/review-api-cli-COMPLETED.md](../application-filling-COMPLETED/review-api-cli-COMPLETED.md),
+- [../shared-infra-COMPLETED/langfuse-tracing-COMPLETED.md](../shared-infra-COMPLETED/langfuse-tracing-COMPLETED.md).
 
 ## Acceptance Criteria
 - `uv run evals/run_evals.py` runs end-to-end, writes `evals/results/<timestamp>.json`, exits 0 when 100% on all cases, and Langfuse shows the run + scores (env present) or skips gracefully (env absent).

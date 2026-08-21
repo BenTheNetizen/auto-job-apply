@@ -1,5 +1,5 @@
 # AutoJobApply — Master Spec
-- **Status:** Defined
+- **Status:** COMPLETED (all leaves verified; eval gate green at required_completion=1.0; live-fire-smoke deferred as stretch pending a real posting URL)
 - **Parent:** none (this is the root)
 
 ## 1. Problem Statement & Motivation
@@ -31,25 +31,25 @@ evals: mock Ashby/Greenhouse/Lever sites ──► filler ──► Langfuse eva
 7. **Future Supabase move:** one table per CSV, thin persistence adapter, explicit migrations (`supabase migration new`), never `apply_migration` for iteration.
 
 ## 5. Dependency Map (leaf level)
-- [shared-infra](./shared-infra/index.md)
+- [shared-infra](./shared-infra-COMPLETED/index.md)
   - config-surface — depends on: none
   - errors-artifacts — depends on: config-surface
   - csv-store — depends on: config-surface
   - langfuse-tracing — depends on: config-surface
   - llm-openrouter — depends on: config-surface, langfuse-tracing
-- [applicant-profile](./applicant-profile/index.md)
+- [applicant-profile](./applicant-profile-COMPLETED/index.md)
   - profile-csv — depends on: csv-store
   - self-learning-store — depends on: profile-csv, llm-openrouter
-- [application-filling](./application-filling/index.md)
+- [application-filling](./application-filling-COMPLETED/index.md)
   - ats-registry — depends on: errors-artifacts
-  - ats-plugins/ashby — depends on: ats-registry
-  - ats-plugins/greenhouse — depends on: ats-registry
-  - ats-plugins/lever — depends on: ats-registry
+  - ats-plugins-COMPLETED/ashby — depends on: ats-registry
+  - ats-plugins-COMPLETED/greenhouse — depends on: ats-registry
+  - ats-plugins-COMPLETED/lever — depends on: ats-registry
   - field-extractor — depends on: ats-registry + all three ats plugins, errors-artifacts
   - answer-planner — depends on: field-extractor, profile-csv, self-learning-store, llm-openrouter
   - filler-submitter — depends on: answer-planner, errors-artifacts
   - review-api-cli — depends on: filler-submitter, self-learning-store
-- [email-monitoring](./email-monitoring/index.md)
+- [email-monitoring](./email-monitoring-COMPLETED/index.md)
   - status-parser — depends on: llm-openrouter
   - replay-safety — depends on: csv-store
   - agentmail-poll — depends on: status-parser, replay-safety, errors-artifacts
@@ -59,11 +59,11 @@ evals: mock Ashby/Greenhouse/Lever sites ──► filler ──► Langfuse eva
   - live-fire-smoke — depends on: eval-runner (stretch; Browserbase)
 
 ## 6. Child Specs
-- [shared-infra](./shared-infra/index.md) — config surface, CSV engine, LLM/OpenRouter client, Langfuse tracing, errors/artifacts
-- [applicant-profile](./applicant-profile/index.md) — profile CSV + self-learning question→answer store
-- [application-filling](./application-filling/index.md) — ATS registry/plugins, field extraction, answer planning, fill/submit, review API+CLI
-- [email-monitoring](./email-monitoring/index.md) — AgentMail poll, status parsing, replay safety
+- [shared-infra](./shared-infra-COMPLETED/index.md) — config surface, CSV engine, LLM/OpenRouter client, Langfuse tracing, errors/artifacts
+- [applicant-profile](./applicant-profile-COMPLETED/index.md) — profile CSV + self-learning question→answer store
+- [application-filling](./application-filling-COMPLETED/index.md) — ATS registry/plugins, field extraction, answer planning, fill/submit, review API+CLI
+- [email-monitoring](./email-monitoring-COMPLETED/index.md) — AgentMail poll, status parsing, replay safety
 
 ## Open Questions
-- Mock-eval React app tooling: Vite assumed; adjust in [evals/mock-sites](./evals/mock-sites-IN_REVIEW.md) if user prefers CRA/Next.
-- Whether the email poll loop runs in-process with the API server or as `auto_job_apply email-monitor`: decided in [email-monitoring/agentmail-poll](./email-monitoring/agentmail-poll-IN_REVIEW.md) leaf (separate run command preferred).
+- Mock-eval React app tooling: Vite assumed; adjust in [evals/mock-sites](./evals/mock-sites-COMPLETED.md) if user prefers CRA/Next.
+- Whether the email poll loop runs in-process with the API server or as `auto_job_apply email-monitor`: decided in [email-monitoring-COMPLETED/agentmail-poll](./email-monitoring-COMPLETED/agentmail-poll-COMPLETED.md) leaf (separate run command preferred).

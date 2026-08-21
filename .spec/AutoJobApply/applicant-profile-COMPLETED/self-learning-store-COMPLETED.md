@@ -15,8 +15,8 @@ Map free-form form quirks ("Are you a protected veteran?", "Visa sponsorship nee
 - `suggest(label)` returns authoritative answer if one exists.
 
 ## Dependencies
-- [./profile-csv-IN_REVIEW.md](./profile-csv-IN_REVIEW.md)
-- [../shared-infra/llm-openrouter-IN_REVIEW.md](../shared-infra/llm-openrouter-IN_REVIEW.md)
+- [./profile-csv-COMPLETED.md](./profile-csv-COMPLETED.md)
+- [../shared-infra-COMPLETED/llm-openrouter-COMPLETED.md](../shared-infra-COMPLETED/llm-openrouter-COMPLETED.md)
 
 ## Acceptance Criteria
 - Alias hits never call the LLM.

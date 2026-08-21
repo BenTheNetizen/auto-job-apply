@@ -12,12 +12,12 @@ Poll the AgentMail inbox (`taylor.wong@agentmail.to` in all verification; never 
 - Dedupe on `message_id` via a processed-ledger CSV; crashes mid-loop must not reprocess updates.
 
 ## Children
-- [status-parser](./status-parser-IN_REVIEW.md) — email → `{status, confidence, raw_snippet}` (rules first, LLM fallback)
-- [replay-safety](./replay-safety-IN_REVIEW.md) — processed-message ledger
-- [agentmail-poll](./agentmail-poll-IN_REVIEW.md) — poll loop, match, update, mark-read
+- [status-parser](./status-parser-COMPLETED.md) — email → `{status, confidence, raw_snippet}` (rules first, LLM fallback)
+- [replay-safety](./replay-safety-COMPLETED.md) — processed-message ledger
+- [agentmail-poll](./agentmail-poll-COMPLETED.md) — poll loop, match, update, mark-read
 
 ## Dependencies
-- [shared-infra/config-surface](../shared-infra/config-surface-IN_REVIEW.md)
-- [shared-infra/llm-openrouter](../shared-infra/llm-openrouter-IN_REVIEW.md)
-- [shared-infra/csv-store](../shared-infra/csv-store-IN_REVIEW.md)
-- [shared-infra/errors-artifacts](../shared-infra/errors-artifacts-IN_REVIEW.md)
+- [shared-infra-COMPLETED/config-surface](../shared-infra-COMPLETED/config-surface-COMPLETED.md)
+- [shared-infra-COMPLETED/llm-openrouter](../shared-infra-COMPLETED/llm-openrouter-COMPLETED.md)
+- [shared-infra-COMPLETED/csv-store](../shared-infra-COMPLETED/csv-store-COMPLETED.md)
+- [shared-infra-COMPLETED/errors-artifacts](../shared-infra-COMPLETED/errors-artifacts-COMPLETED.md)

@@ -17,8 +17,8 @@ Human/agent review surface over `applications.csv`: list, inspect, edit fields (
 - Edit→learn hook only writes canonicalized label + value and `source=learned` when value non-empty.
 
 ## Dependencies
-- [./filler-submitter-IN_REVIEW.md](./filler-submitter-IN_REVIEW.md),
-- [../applicant-profile/self-learning-store-IN_REVIEW.md](../applicant-profile/self-learning-store-IN_REVIEW.md).
+- [./filler-submitter-COMPLETED.md](./filler-submitter-COMPLETED.md),
+- [../applicant-profile-COMPLETED/self-learning-store-COMPLETED.md](../applicant-profile-COMPLETED/self-learning-store-COMPLETED.md).
 
 ## Acceptance Criteria
 - All 5 routes on `server` return shapes above (status filter honored); CLI works in both modes.

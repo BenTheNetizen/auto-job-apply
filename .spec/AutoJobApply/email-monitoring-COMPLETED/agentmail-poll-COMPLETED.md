@@ -17,10 +17,10 @@ Poll AgentMail on schedule → match → parse → update → mark-read, with th
 - Errors from SDK/parse wrapped in `EmailPollError` with context; one bad message doesn't kill the loop.
 
 ## Dependencies
-- [./status-parser-IN_REVIEW.md](./status-parser-IN_REVIEW.md),
-- [./replay-safety-IN_REVIEW.md](./replay-safety-IN_REVIEW.md),
-- [../shared-infra/errors-artifacts-IN_REVIEW.md](../shared-infra/errors-artifacts-IN_REVIEW.md),
-- [../shared-infra/config-surface-IN_REVIEW.md](../shared-infra/config-surface-IN_REVIEW.md).
+- [./status-parser-COMPLETED.md](./status-parser-COMPLETED.md),
+- [./replay-safety-COMPLETED.md](./replay-safety-COMPLETED.md),
+- [../shared-infra-COMPLETED/errors-artifacts-COMPLETED.md](../shared-infra-COMPLETED/errors-artifacts-COMPLETED.md),
+- [../shared-infra-COMPLETED/config-surface-COMPLETED.md](../shared-infra-COMPLETED/config-surface-COMPLETED.md).
 
 ## Acceptance Criteria
 - `--once` against mocked SDK: one unseen message updates exactly one application row, ledger + mark-read invoked, message not returned on next poll.

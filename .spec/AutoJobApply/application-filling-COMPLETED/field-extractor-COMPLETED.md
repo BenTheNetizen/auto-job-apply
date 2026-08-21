@@ -18,9 +18,9 @@ Walk a live form in Playwright and emit a normalized `ApplicationForm` with ever
 - Timeout: hard cap `FILLER.timeout_ms`; partial forms saved via `ExtractionError(context={"partial": form})`.
 
 ## Dependencies
-- [./ats-registry-IN_REVIEW.md](./ats-registry-IN_REVIEW.md)
-- [./ats-plugins/ashby-IN_REVIEW.md](./ats-plugins/ashby-IN_REVIEW.md), [./ats-plugins/greenhouse-IN_REVIEW.md](./ats-plugins/greenhouse-IN_REVIEW.md), [./ats-plugins/lever-IN_REVIEW.md](./ats-plugins/lever-IN_REVIEW.md)
-- [../shared-infra/errors-artifacts-IN_REVIEW.md](../shared-infra/errors-artifacts-IN_REVIEW.md)
+- [./ats-registry-COMPLETED.md](./ats-registry-COMPLETED.md)
+- [./ats-plugins-COMPLETED/ashby-COMPLETED.md](./ats-plugins-COMPLETED/ashby-COMPLETED.md), [./ats-plugins-COMPLETED/greenhouse-COMPLETED.md](./ats-plugins-COMPLETED/greenhouse-COMPLETED.md), [./ats-plugins-COMPLETED/lever-COMPLETED.md](./ats-plugins-COMPLETED/lever-COMPLETED.md)
+- [../shared-infra-COMPLETED/errors-artifacts-COMPLETED.md](../shared-infra-COMPLETED/errors-artifacts-COMPLETED.md)
 
 ## Acceptance Criteria
 - Against eval mocks: extracts ≥9/10 known flavors; labels and `required` flags match gold labels.

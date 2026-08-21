@@ -15,7 +15,7 @@ Ashby-specific selectors + quirks.
 - Quirks documented inline; selectors prefer role/text over brittle ids.
 
 ## Dependencies
-- [../ats-registry-IN_REVIEW.md](../ats-registry-IN_REVIEW.md)
+- [../ats-registry-COMPLETED.md](../ats-registry-COMPLETED.md)
 
 ## Acceptance Criteria
 - Registry returns this plugin for `https://jobs.ashbyhq.com/<org>/<id>`.

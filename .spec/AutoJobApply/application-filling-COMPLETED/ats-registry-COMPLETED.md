@@ -17,7 +17,7 @@ Map a job URL to its ATS plugin, and define the plugin contract the three implem
 - `registry()` returns singleton list of plugin singletons.
 
 ## Dependencies
-- [../shared-infra/errors-artifacts-IN_REVIEW.md](../shared-infra/errors-artifacts-IN_REVIEW.md)
+- [../shared-infra-COMPLETED/errors-artifacts-COMPLETED.md](../shared-infra-COMPLETED/errors-artifacts-COMPLETED.md)
 
 ## Acceptance Criteria
 - Known host → plugin; unknown host → `UnsupportedATSError` with the URL in `.context`.

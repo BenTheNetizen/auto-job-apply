@@ -19,7 +19,7 @@ Poll AgentMail on schedule → match → parse → update → mark-read, with th
 ## Dependencies
 - [./status-parser.md](./status-parser.md),
 - [./replay-safety.md](./replay-safety.md),
-- [../shared-infra/errors-artifacts.md](../shared-infra/errors-artifacts.md),
+- [../shared-infra/errors-artifacts-IN_REVIEW.md](../shared-infra/errors-artifacts-IN_REVIEW.md),
 - [../shared-infra/config-surface-IN_REVIEW.md](../shared-infra/config-surface-IN_REVIEW.md).
 
 ## Acceptance Criteria

@@ -20,7 +20,7 @@ Walk a live form in Playwright and emit a normalized `ApplicationForm` with ever
 ## Dependencies
 - [./ats-registry.md](./ats-registry.md)
 - [./ats-plugins/ashby.md](./ats-plugins/ashby.md), [./ats-plugins/greenhouse.md](./ats-plugins/greenhouse.md), [./ats-plugins/lever.md](./ats-plugins/lever.md)
-- [../shared-infra/errors-artifacts.md](../shared-infra/errors-artifacts.md)
+- [../shared-infra/errors-artifacts-IN_REVIEW.md](../shared-infra/errors-artifacts-IN_REVIEW.md)
 
 ## Acceptance Criteria
 - Against eval mocks: extracts ≥9/10 known flavors; labels and `required` flags match gold labels.

@@ -20,7 +20,7 @@ Playwright-driven deterministic fill of the form, artifact capture, gate to revi
 
 ## Dependencies
 - [./answer-planner.md](./answer-planner.md),
-- [../shared-infra/errors-artifacts.md](../shared-infra/errors-artifacts.md),
+- [../shared-infra/errors-artifacts-IN_REVIEW.md](../shared-infra/errors-artifacts-IN_REVIEW.md),
 - (through planner) all upstream deps.
 
 ## Acceptance Criteria

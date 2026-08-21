@@ -65,5 +65,5 @@ evals: mock Ashby/Greenhouse/Lever sites ──► filler ──► Langfuse eva
 - [email-monitoring](./email-monitoring/index.md) — AgentMail poll, status parsing, replay safety
 
 ## Open Questions
-- Mock-eval React app tooling: Vite assumed; adjust in [evals/mock-sites](./evals/mock-sites.md) if user prefers CRA/Next.
+- Mock-eval React app tooling: Vite assumed; adjust in [evals/mock-sites](./evals/mock-sites-IN_REVIEW.md) if user prefers CRA/Next.
 - Whether the email poll loop runs in-process with the API server or as `auto_job_apply email-monitor`: decided in [email-monitoring/agentmail-poll](./email-monitoring/agentmail-poll.md) leaf (separate run command preferred).

@@ -15,7 +15,7 @@ Run the real filler against the mock sites, score required-field completion and 
 - Exit code non-zero if overall `required_completion < 1.0` — this is the hill-climb gate.
 
 ## Dependencies
-- [./mock-sites.md](./mock-sites.md),
+- [./mock-sites-IN_REVIEW.md](./mock-sites-IN_REVIEW.md),
 - [../application-filling/filler-submitter.md](../application-filling/filler-submitter.md),
 - [../application-filling/review-api-cli.md](../application-filling/review-api-cli.md),
 - [../shared-infra/langfuse-tracing.md](../shared-infra/langfuse-tracing.md).

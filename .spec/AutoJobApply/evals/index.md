@@ -12,7 +12,7 @@ Prove field-completion fidelity without touching the internet: static mock Ashby
 - Eval metric: required-field completion rate (headline) + answer fidelity (exact/normalized match vs gold).
 
 ## Children
-- [mock-sites](./mock-sites.md) — React app with `/ashby`, `/greenhouse`, `/lever` routes + gold labels
+- [mock-sites](./mock-sites-IN_REVIEW.md) — React app with `/ashby`, `/greenhouse`, `/lever` routes + gold labels
 - [eval-runner](./eval-runner.md) — run filler against mocks, score, publish Langfuse dataset run
 - [live-fire-smoke](./live-fire-smoke.md) — stretch: real posting via Browserbase with mock identity
 

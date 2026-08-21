@@ -17,6 +17,7 @@ dependencies = [
     "langchain-core>=1.6.0",
     "langchain-openai>=1.6.0",
     "langfuse>=4.14.4",
+    "langgraph>=1.2.11",
     "playwright>=1.62.0",
     "psycopg2-binary>=2.9.10",
     "sqlalchemy>=2.0.36",

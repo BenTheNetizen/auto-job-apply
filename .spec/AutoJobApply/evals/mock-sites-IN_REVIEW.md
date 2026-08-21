@@ -22,4 +22,4 @@ A single Vite + React app under `evals/mock-sites/` serving `/ashby`, `/greenhou
 - Gold JSON files exist for ≥9 cases covering the flavor matrix.
 
 ## Test Plan & Definition of Done
-- Smoke test run by eval-runner: all routes 200; gold JSON parses into pydantic models in Python side. Verified via [./eval-runner.md](./eval-runner.md).
+- Smoke test run by eval-runner: all routes 200; gold JSON parses into pydantic models in Python side. Verified via [./eval-runner-IN_REVIEW.md](./eval-runner-IN_REVIEW.md).

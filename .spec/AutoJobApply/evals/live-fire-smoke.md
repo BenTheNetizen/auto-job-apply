@@ -13,7 +13,7 @@ Optional: validate end-to-end against one real Ashby, Greenhouse, or Lever posti
 - Documents observed bot-detection signals into `evals/live_fire_notes.md` (captcha, rate limit, JS challenge).
 
 ## Dependencies
-- [./eval-runner.md](./eval-runner.md) — signals only after mocks pass at 100%.
+- [./eval-runner-IN_REVIEW.md](./eval-runner-IN_REVIEW.md) — signals only after mocks pass at 100%.
 
 ## Acceptance Criteria
 - From one real URL: extraction ≥90% fields found end-to-end with Browserbase; no submission occurs; screenshots recorded.

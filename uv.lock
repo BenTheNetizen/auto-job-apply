@@ -55,11 +55,11 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "agentmail" },
-    { name = "browserbase" },
     { name = "colorlog" },
     { name = "dynaconf" },
     { name = "fastapi" },
     { name = "filelock" },
+    { name = "httpx" },
     { name = "langchain" },
     { name = "langchain-core" },
     { name = "langchain-openai" },
@@ -67,6 +67,7 @@ dependencies = [
     { name = "langgraph" },
     { name = "playwright" },
     { name = "psycopg2-binary" },
+    { name = "pydantic" },
     { name = "sqlalchemy" },
     { name = "uvicorn", extra = ["standard"] },
 ]
@@ -80,11 +81,11 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "agentmail", specifier = ">=0.5.9" },
-    { name = "browserbase", specifier = ">=1.17.0" },
     { name = "colorlog", specifier = ">=6.9.0" },
     { name = "dynaconf", specifier = ">=3.2.12" },
     { name = "fastapi", specifier = ">=0.115.0" },
     { name = "filelock", specifier = ">=3.32.3" },
+    { name = "httpx", specifier = ">=0.28.1" },
     { name = "langchain", specifier = ">=1.3.16" },
     { name = "langchain-core", specifier = ">=1.6.0" },
     { name = "langchain-openai", specifier = ">=1.6.0" },
@@ -92,15 +93,20 @@ requires-dist = [
     { name = "langgraph", specifier = ">=1.2.11" },
     { name = "playwright", specifier = ">=1.62.0" },
     { name = "psycopg2-binary", specifier = ">=2.9.10" },
+    { name = "pydantic", specifier = ">=2.13.4" },
     { name = "sqlalchemy", specifier = ">=2.0.36" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.34.0" },
 ]
 
 [package.metadata.requires-dev]
+<<<<<<< HEAD
 dev = [
     { name = "pytest", specifier = ">=8" },
     { name = "pytest-asyncio", specifier = ">=1.4.0" },
 ]
+=======
+dev = [{ name = "pytest", specifier = ">=9.1.1" }]
+>>>>>>> origin/leaf/eval-runner
 
 [[package]]
 name = "backoff"
@@ -109,23 +115,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/47/d7/5bbeb12c44d7c4f2fb5b56abce497eb5ed9f34d85701de869acedd602619/backoff-2.2.1.tar.gz", hash = "sha256:03f829f5bb1923180821643f8753b0502c3b682293992485b0eef2807afa5cba", size = 17001 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/df/73/b6e24bd22e6720ca8ee9a85a0c4a2971af8497d8f3193fa05390cbd46e09/backoff-2.2.1-py3-none-any.whl", hash = "sha256:63579f9a0628e06278f7e47b7d7d5b6ce20dc65c5e96a6f3ca99a6adca0396e8", size = 15148 },
-]
-
-[[package]]
-name = "browserbase"
-version = "1.17.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "anyio" },
-    { name = "distro" },
-    { name = "httpx" },
-    { name = "pydantic" },
-    { name = "sniffio" },
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/4b/c1/aab1f0e1b909bfafb437089148cd17ca499173d45071ed5474a2ad3be7eb/browserbase-1.17.0.tar.gz", hash = "sha256:981742b47c6dbbbb9a25242b91d38272d88633829c29f8e648747364728ff123", size = 286824 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/bc/f3/37ac802c74ab0e64bb11a3f9b1d51518d7d2accbcfb0286aafe5229d1a3a/browserbase-1.17.0-py3-none-any.whl", hash = "sha256:cf9b6f2070bd54d61db6156eb481c3bafd8c53d084ffd53b9e09e784d218c301", size = 145844 },
 ]
 
 [[package]]

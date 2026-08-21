@@ -138,6 +138,26 @@ class TestLlmFallback:
         assert result.raw_snippet == "some body"[:600]
 
 
+class TestOfferRuleSpecificity:
+    """The offer rule must require the noun 'offer' (review fix)."""
+
+    def test_invitation_to_interview_is_not_offer(self) -> None:
+        parsed = parse(
+            "Next steps at Acme",
+            "We are pleased to extend an invitation to interview with our "
+            "engineering team next week.",
+        )
+        assert parsed.status is ApplicationStatus.interview_scheduled
+
+    def test_pleased_to_extend_offer_is_offer(self) -> None:
+        parsed = parse(
+            "Offer from Acme",
+            "We are pleased to extend you an offer for the Senior Engineer "
+            "role.",
+        )
+        assert parsed.status is ApplicationStatus.offer
+
+
 class TestContract:
     def test_snippet_capped(self) -> None:
         body = "unfortunately " + "x" * 2000

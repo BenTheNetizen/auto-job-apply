@@ -66,7 +66,9 @@ _RULES: list[tuple[ApplicationStatus, tuple[str, ...]]] = [
         (
             r"\boffer letter\b",
             r"\bformal offer\b",
-            r"\bpleased to (?:extend|offer)\b",
+            # Require the noun "offer": "pleased to extend an invitation to
+            # interview" must not classify as an offer.
+            r"\bpleased to (?:extend|offer) (?:you )?(?:a |an |the )?(?:formal )?offer\b",
             r"\bdelighted to offer\b",
             r"\boffer of employment\b",
         ),

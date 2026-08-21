@@ -13,7 +13,7 @@ Given a job URL on Ashby, Greenhouse, or Lever: extract the form, draft answers 
 - Submission runs through the review API/CLI so a human (or the verifying agent) confirms first.
 
 ## Children
-- [ats-registry](./ats-registry.md) — URL → ATS detection + plugin lookup
+- [ats-registry](./ats-registry-IN_REVIEW.md) — URL → ATS detection + plugin lookup
 - [ats-plugins/](./ats-plugins/index.md) — per-ATS plugin contract + the three plugins
 - [field-extractor](./field-extractor.md) — Playwright walk, iterative field discovery, `ApplicationForm` model
 - [answer-planner](./answer-planner.md) — profile lookup + LLM drafts → `AnswerPlan`

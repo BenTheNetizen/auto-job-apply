@@ -14,7 +14,7 @@ Lever-specific selectors + quirks.
 - Document accordion and dynamic-reveal quirks inline.
 
 ## Dependencies
-- [../ats-registry.md](../ats-registry.md)
+- [../ats-registry-IN_REVIEW.md](../ats-registry-IN_REVIEW.md)
 
 ## Acceptance Criteria
 - Registry routes `https://jobs.lever.co/<org>/<id>` here.

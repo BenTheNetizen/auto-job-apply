@@ -12,4 +12,4 @@ Per-ATS selector/quirk knowledge only. Extraction/planning/submission stay in sh
 - [lever](./lever.md)
 
 ## Dependencies
-- [../ats-registry.md](../ats-registry.md) — the contract + dispatcher.
+- [../ats-registry-IN_REVIEW.md](../ats-registry-IN_REVIEW.md) — the contract + dispatcher.

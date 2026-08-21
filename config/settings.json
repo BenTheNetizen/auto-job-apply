@@ -8,6 +8,25 @@
     },
     "DB": {
       "url": null
+    },
+    "DATA": {
+      "dir": "data"
+    },
+    "LLM": {
+      "model": "openai/gpt-4.1-mini",
+      "temperature": 0
+    },
+    "FILLER": {
+      "headless": true,
+      "timeout_ms": 45000,
+      "screenshots": true
+    },
+    "EMAIL": {
+      "poll_interval_seconds": 300,
+      "account": "taylor.wong@agentmail.to"
+    },
+    "EVALS": {
+      "mock_base_url": "http://localhost:5173"
     }
   }
 }

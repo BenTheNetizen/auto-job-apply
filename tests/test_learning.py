@@ -60,11 +60,24 @@ class TestLearn:
         learning.learn("veteran", "no", path=p)
         assert profile.get_authoritative("veteran_status", p) == "no"
 
-    def test_learn_llm_draft_non_authoritative(self, tmp_path: Path) -> None:
+    def test_learn_llm_draft_preserves_answer_non_authoritative(self, tmp_path: Path) -> None:
         p = _tmp_path(tmp_path)
         learning.learn("veteran", "no", source="llm_draft", path=p)
         assert profile.get_authoritative("veteran_status", p) is None
-        assert profile.get("veteran_status", p) == ""
+        assert profile.get("veteran_status", p) == "no"
+
+    def test_llm_draft_does_not_clobber_authoritative(self, tmp_path: Path) -> None:
+        p = _tmp_path(tmp_path)
+        learning.learn("veteran", "protected", source="manual", path=p)
+        learning.learn("veteran", "yes", source="llm_draft", path=p)
+        assert profile.get_authoritative("veteran_status", p) == "protected"
+        assert profile.get("veteran_status", p) == "protected"
+
+    def test_unmapped_learn_then_suggest_round_trip(self, tmp_path: Path) -> None:
+        with patch.object(learning, "_canonicalize_via_llm", return_value=None):
+            p = _tmp_path(tmp_path)
+            learning.learn("Some Brand New Question", "1", path=p)
+            assert learning.suggest("Some Brand New Question", p) == "1"
 
     def test_unmapped_label_falls_back_to_normalized(self, tmp_path: Path) -> None:
         with patch.object(learning, "_canonicalize_via_llm", return_value=None):

@@ -84,8 +84,12 @@ def _canonicalize_via_llm(label: str) -> str | None:
     return key if isinstance(key, str) else None
 
 
-def _record_llm_draft(label: str, key: str, path: str | Path | None = None) -> None:
-    profile.set(key, "", "llm_draft", path)
+def _record_llm_draft(key: str, answer: str, path: str | Path | None = None) -> None:
+    # Never clobber a manual/learned authoritative answer; only record when
+    # there is nothing authoritative yet. The caller-supplied answer is
+    # preserved so the review surface has a proposed value to approve.
+    if profile.get_authoritative(key, path) is None:
+        profile.set(key, answer, "llm_draft", path)
 
 
 def learn(label: str, answer: str, source: str = "learned", path: str | Path | None = None) -> None:
@@ -94,16 +98,16 @@ def learn(label: str, answer: str, source: str = "learned", path: str | Path | N
     ``source='llm_draft'`` writes a non-authoritative suggestion only."""
     key = canonicalize(label) or _normalize(label).replace(" ", "_")
     if source == "llm_draft":
-        _record_llm_draft(label, key, path)
+        _record_llm_draft(key, answer, path)
         return
     profile.set(key, answer, source, path)
 
 
 def suggest(label: str, path: str | Path | None = None) -> str | None:
     """Authoritative answer for *label*, canonicalized, or None."""
-    key = canonicalize(label)
-    if key is None:
-        return None
+    # Resolve with the same fallback as learn() so previously learned
+    # unmapped labels are reachable (round-trip learn → suggest).
+    key = canonicalize(label) or _normalize(label).replace(" ", "_")
     return profile.get_authoritative(key, path)
 
 

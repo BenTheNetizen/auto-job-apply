@@ -11,7 +11,7 @@ The one Pydantic-backed CSV persistence engine every subsystem uses.
 
 **Engine (`CsvStore[T: BaseModel]`)**:
 - `CsvStore(path, model)` — header ordered from `model.model_fields`; JSON-in-column fields supported via `model_dump(mode="json")` per cell.
-- `read_all() -> list[T]`, `append(row)`, `update(id, row)`, `get(id)`, `upsert(key_field, row)`, `append_event(row, list_field, event)`.
+- `read_all() -> list[T]`, `append(row)`, `update(id, row)`, `get(id)`, `upsert(key_field, row)`, `append_event(key, list_field, event)`.
 - Atomic writes: write `${file}.tmp`, `os.replace`.
 - Cross-process safety: `filelock` (add dependency `filelock`) guarding each write.
 - Optional columns tolerate missing keys on load (schema evolution: add column → old files load with defaults).

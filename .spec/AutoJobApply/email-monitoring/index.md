@@ -19,5 +19,5 @@ Poll the AgentMail inbox (`taylor.wong@agentmail.to` in all verification; never 
 ## Dependencies
 - [shared-infra/config-surface](../shared-infra/config-surface-IN_REVIEW.md)
 - [shared-infra/llm-openrouter](../shared-infra/llm-openrouter.md)
-- [shared-infra/csv-store](../shared-infra/csv-store.md)
+- [shared-infra/csv-store](../shared-infra/csv-store-IN_REVIEW.md)
 - [shared-infra/errors-artifacts](../shared-infra/errors-artifacts-IN_REVIEW.md)

@@ -14,7 +14,7 @@ The authoritative key-value store for the applicant's answers: `applicant_profil
 File is created on first use under `${DATA.dir}/applicant_profile.csv`.
 
 ## Dependencies
-- [../shared-infra/csv-store.md](../shared-infra/csv-store.md) — must be COMPLETED before claiming.
+- [../shared-infra/csv-store-IN_REVIEW.md](../shared-infra/csv-store-IN_REVIEW.md) — must be COMPLETED before claiming.
 
 ## Acceptance Criteria
 - `set` then `get` round-trips; `get_authoritative` ignores `llm_draft` rows.

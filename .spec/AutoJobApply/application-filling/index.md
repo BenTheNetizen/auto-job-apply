@@ -22,7 +22,7 @@ Given a job URL on Ashby, Greenhouse, or Lever: extract the form, draft answers 
 
 ## Dependencies
 - [shared-infra/config-surface](../shared-infra/config-surface-IN_REVIEW.md)
-- [shared-infra/csv-store](../shared-infra/csv-store.md)
+- [shared-infra/csv-store](../shared-infra/csv-store-IN_REVIEW.md)
 - [shared-infra/errors-artifacts](../shared-infra/errors-artifacts-IN_REVIEW.md)
 - [shared-infra/llm-openrouter](../shared-infra/llm-openrouter.md)
 - [applicant-profile/profile-csv](../applicant-profile/profile-csv.md)

@@ -16,5 +16,5 @@ The applicant's canonical answer store: name, email, resume path, and self-learn
 - [self-learning-store](./self-learning-store.md) — canonicalization + write-back of edited/confirmed answers
 
 ## Dependencies
-- [shared-infra/csv-store](../shared-infra/csv-store.md)
+- [shared-infra/csv-store](../shared-infra/csv-store-IN_REVIEW.md)
 - [shared-infra/llm-openrouter](../shared-infra/llm-openrouter.md)

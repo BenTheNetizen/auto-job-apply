@@ -18,5 +18,5 @@ Prove field-completion fidelity without touching the internet: static mock Ashby
 
 ## Dependencies
 - [application-filling/filler-submitter](../application-filling/filler-submitter-IN_REVIEW.md)
-- [application-filling/review-api-cli](../application-filling/review-api-cli.md)
+- [application-filling/review-api-cli](../application-filling/review-api-cli-IN_REVIEW.md)
 - [shared-infra/langfuse-tracing](../shared-infra/langfuse-tracing-IN_REVIEW.md)

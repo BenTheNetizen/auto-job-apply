@@ -15,7 +15,7 @@ Turn an `ApplicationForm` + applicant profile into an `AnswerPlan`: each field a
 - Edge: `extract(url)` may time out partially — planner still attempts found fields.
 
 ## Dependencies
-- [./field-extractor.md](./field-extractor.md),
+- [./field-extractor-IN_REVIEW.md](./field-extractor-IN_REVIEW.md),
 - [../applicant-profile/profile-csv-IN_REVIEW.md](../applicant-profile/profile-csv-IN_REVIEW.md),
 - [../applicant-profile/self-learning-store-IN_REVIEW.md](../applicant-profile/self-learning-store-IN_REVIEW.md),
 - [../shared-infra/llm-openrouter-IN_REVIEW.md](../shared-infra/llm-openrouter-IN_REVIEW.md).

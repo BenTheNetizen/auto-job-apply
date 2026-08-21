@@ -1,11 +1,9 @@
 """Greenhouse (boards.greenhouse.io) plugin: selectors and page quirks.
 
 Satisfies the ``ATSPlugin`` protocol defined in
-``auto_job_apply.services.ats_registry``. Registration into the registry is
-done best-effort at import time: when the registry module is available we
-register, otherwise we skip silently. The registry leaf lands separately in
-the M2 wave; once it is on main this self-registration is what routes
-greenhouse URLs to this plugin.
+``auto_job_apply.services.ats_registry`` and self-registers via the
+registry's documented ``register`` seam at import time, routing greenhouse
+URLs to this plugin (same idiom as ashby/lever).
 
 Selectors intentionally prefer labels/roles/structure over brittle ids, so
 they work on both the real Greenhouse DOM and the eval mock at
@@ -29,6 +27,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse
+
+from auto_job_apply.services.ats_registry import register
 
 if TYPE_CHECKING:  # Playwright is introduced by the extractor leaf.
     from playwright.sync_api import Locator, Page  # pragma: no cover
@@ -96,19 +96,7 @@ class GreenhousePlugin:
         """
 
 
-plugin = GreenhousePlugin()
-
-
-# Self-registration (registry lands separately in the same wave; integration
-# of this plugin happens once registry is on main).
-try:  # noqa: SIM105 - guard ImportError, not a subtle control flow
-    from auto_job_apply.services.ats_registry import registry
-
-    _plugins = registry()
-    if plugin not in _plugins:
-        _plugins.append(plugin)
-except (ImportError, AttributeError):  # pragma: no cover - registry races
-    pass
+plugin = register(GreenhousePlugin())
 
 
 __all__ = ["GreenhousePlugin", "plugin"]

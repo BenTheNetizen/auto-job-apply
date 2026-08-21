@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import pytest
 
+from auto_job_apply.services import ats_registry
 from auto_job_apply.services.ats import greenhouse
 
 
@@ -102,6 +103,12 @@ class TestPluginSingleton:
     def test_module_exposes_singleton(self, plugin):
         assert green_note(plugin.name)
         assert plugin is greenhouse.plugin
+
+    def test_auto_registered_via_register_seam(self, plugin):
+        # Import-time registration goes through ats_registry.register()
+        # (documented seam) rather than mutating the registry list.
+        assert plugin in ats_registry.registry()
+        assert ats_registry.plugin_for("https://boards.greenhouse.io/org/1") is plugin
 
     def test_plugin_protocol_shape(self, plugin):
         for method in (

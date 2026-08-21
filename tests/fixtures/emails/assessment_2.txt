@@ -1,0 +1,8 @@
+Subject: Technical assessment for Acme role
+
+Hello,
+
+Please complete the technical assessment on HackerRank within 72 hours.
+This online assessment helps us evaluate problem-solving skills.
+
+Regards, Talent Team

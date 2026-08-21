@@ -8,6 +8,7 @@ version = "0.1.0"
 description = "Python package template"
 requires-python = ">=3.12"
 dependencies = [
+    "agentmail>=0.5.9",
     "colorlog>=6.9.0",
     "dynaconf>=3.2.12",
     "fastapi>=0.115.0",

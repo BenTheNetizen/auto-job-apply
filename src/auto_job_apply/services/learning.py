@@ -61,25 +61,24 @@ def _canonicalize_via_llm(label: str) -> str | None:
     # and this module stays importable while services/llm.py is still being
     # built by another chain.
     try:
-        from auto_job_apply.services.llm import structured  # noqa: F401
+        from auto_job_apply.services.llm import get_llm
+        from auto_job_apply.services.llm import structured as _structured
     except ImportError:
         logger.debug("services.llm not yet available; LLM canonicalization skipped")
         return None
-    from auto_job_apply.services.llm import structured as _structured
 
     from pydantic import BaseModel
 
     class Canonicalization(BaseModel):
         canonical_key: str | None
 
-    runnable = _structured(
+    runnable = _structured(get_llm(role="learning"), Canonicalization)
+    result = runnable.invoke(
         "You map free-form job application field labels to a canonical "
         "snake_case question key. Respond only with the canonical key if a "
         "well-known mapping exists (e.g. 'Are you a protected veteran?' -> "
-        "veteran_status); otherwise null.",
-        Canonicalization,
+        "veteran_status); otherwise null.\n\nLabel: " + label
     )
-    result = runnable.invoke(label)
     key = getattr(result, "canonical_key", None)
     return key if isinstance(key, str) else None
 

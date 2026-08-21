@@ -21,7 +21,7 @@ Given a job URL on Ashby, Greenhouse, or Lever: extract the form, draft answers 
 - [review-api-cli](./review-api-cli.md) — FastAPI review routes + CLI + submit action
 
 ## Dependencies
-- [shared-infra/config-surface](../shared-infra/config-surface.md)
+- [shared-infra/config-surface](../shared-infra/config-surface-IN_REVIEW.md)
 - [shared-infra/csv-store](../shared-infra/csv-store.md)
 - [shared-infra/errors-artifacts](../shared-infra/errors-artifacts.md)
 - [shared-infra/llm-openrouter](../shared-infra/llm-openrouter.md)

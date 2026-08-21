@@ -20,7 +20,7 @@ Poll AgentMail on schedule → match → parse → update → mark-read, with th
 - [./status-parser.md](./status-parser.md),
 - [./replay-safety.md](./replay-safety.md),
 - [../shared-infra/errors-artifacts.md](../shared-infra/errors-artifacts.md),
-- [../shared-infra/config-surface.md](../shared-infra/config-surface.md).
+- [../shared-infra/config-surface-IN_REVIEW.md](../shared-infra/config-surface-IN_REVIEW.md).
 
 ## Acceptance Criteria
 - `--once` against mocked SDK: one unseen message updates exactly one application row, ledger + mark-read invoked, message not returned on next poll.

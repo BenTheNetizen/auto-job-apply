@@ -17,7 +17,7 @@ Poll the AgentMail inbox (`taylor.wong@agentmail.to` in all verification; never 
 - [agentmail-poll](./agentmail-poll.md) — poll loop, match, update, mark-read
 
 ## Dependencies
-- [shared-infra/config-surface](../shared-infra/config-surface.md)
+- [shared-infra/config-surface](../shared-infra/config-surface-IN_REVIEW.md)
 - [shared-infra/llm-openrouter](../shared-infra/llm-openrouter.md)
 - [shared-infra/csv-store](../shared-infra/csv-store.md)
 - [shared-infra/errors-artifacts](../shared-infra/errors-artifacts.md)

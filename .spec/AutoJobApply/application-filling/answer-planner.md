@@ -16,9 +16,9 @@ Turn an `ApplicationForm` + applicant profile into an `AnswerPlan`: each field a
 
 ## Dependencies
 - [./field-extractor.md](./field-extractor.md),
-- [../applicant-profile/profile-csv.md](../applicant-profile/profile-csv.md),
-- [../applicant-profile/self-learning-store.md](../applicant-profile/self-learning-store.md),
-- [../shared-infra/llm-openrouter.md](../shared-infra/llm-openrouter.md).
+- [../applicant-profile/profile-csv-IN_REVIEW.md](../applicant-profile/profile-csv-IN_REVIEW.md),
+- [../applicant-profile/self-learning-store-IN_REVIEW.md](../applicant-profile/self-learning-store-IN_REVIEW.md),
+- [../shared-infra/llm-openrouter-IN_REVIEW.md](../shared-infra/llm-openrouter-IN_REVIEW.md).
 
 ## Acceptance Criteria
 - Given profile answers for seed keys and LLM available, all answerable required fields get values; unanswerable → `missing_required` with label.

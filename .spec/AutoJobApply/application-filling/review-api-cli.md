@@ -18,7 +18,7 @@ Human/agent review surface over `applications.csv`: list, inspect, edit fields (
 
 ## Dependencies
 - [./filler-submitter.md](./filler-submitter.md),
-- [../applicant-profile/self-learning-store.md](../applicant-profile/self-learning-store.md).
+- [../applicant-profile/self-learning-store-IN_REVIEW.md](../applicant-profile/self-learning-store-IN_REVIEW.md).
 
 ## Acceptance Criteria
 - All 5 routes on `server` return shapes above (status filter honored); CLI works in both modes.

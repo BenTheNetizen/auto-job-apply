@@ -18,7 +18,7 @@ Run the real filler against the mock sites, score required-field completion and 
 - [./mock-sites-IN_REVIEW.md](./mock-sites-IN_REVIEW.md),
 - [../application-filling/filler-submitter.md](../application-filling/filler-submitter.md),
 - [../application-filling/review-api-cli.md](../application-filling/review-api-cli.md),
-- [../shared-infra/langfuse-tracing.md](../shared-infra/langfuse-tracing.md).
+- [../shared-infra/langfuse-tracing-IN_REVIEW.md](../shared-infra/langfuse-tracing-IN_REVIEW.md).
 
 ## Acceptance Criteria
 - `uv run evals/run_evals.py` runs end-to-end, writes `evals/results/<timestamp>.json`, exits 0 when 100% on all cases, and Langfuse shows the run + scores (env present) or skips gracefully (env absent).

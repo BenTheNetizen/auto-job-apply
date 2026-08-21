@@ -14,7 +14,7 @@ The single entry point for LLM calls, with structured output, token/cost logging
 - Logging: log tokens/cost from `response.usage`/`response_metadata`.
 
 ## Dependencies
-- [./langfuse-tracing.md](./langfuse-tracing.md)
+- [./langfuse-tracing-IN_REVIEW.md](./langfuse-tracing-IN_REVIEW.md)
 
 ## Acceptance Criteria
 - Every downstream subsystem calls `get_llm`/`structured` — no direct `ChatOpenAI` construction elsewhere.

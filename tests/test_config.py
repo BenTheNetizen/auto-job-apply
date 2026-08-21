@@ -35,8 +35,11 @@ class TestDefaults:
     def test_evals_default(self) -> None:
         assert settings.get("EVALS.mock_base_url") == "http://localhost:5173"
 
-    def test_api_defaults_intact(self) -> None:
-        assert settings.get("API.host") == "0.0.0.0"
+    def test_api_local_override(self) -> None:
+        # settings.local.json.example intentionally overrides API.host to
+        # 127.0.0.1 so host binding is loopback-safe by default in dev.
+        # settings.json (committed) still specifies the container-facing default.
+        assert settings.get("API.host") == "127.0.0.1"
         assert settings.get("API.port") == 8000
 
 

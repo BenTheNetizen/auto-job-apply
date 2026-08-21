@@ -16,7 +16,7 @@ Given a job URL on Ashby, Greenhouse, or Lever: extract the form, draft answers 
 - [ats-registry](./ats-registry-IN_REVIEW.md) — URL → ATS detection + plugin lookup
 - [ats-plugins/](./ats-plugins/index.md) — per-ATS plugin contract + the three plugins
 - [field-extractor](./field-extractor-IN_REVIEW.md) — Playwright walk, iterative field discovery, `ApplicationForm` model
-- [answer-planner](./answer-planner.md) — profile lookup + LLM drafts → `AnswerPlan`
+- [answer-planner](./answer-planner-IN_REVIEW.md) — profile lookup + LLM drafts → `AnswerPlan`
 - [filler-submitter](./filler-submitter.md) — deterministic fill + artifacts + review gate
 - [review-api-cli](./review-api-cli.md) — FastAPI review routes + CLI + submit action
 

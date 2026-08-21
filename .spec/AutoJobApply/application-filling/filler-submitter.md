@@ -19,7 +19,7 @@ Playwright-driven deterministic fill of the form, artifact capture, gate to revi
   - Browserbase escalation: on `Playwright timeout/captcha/bot`, if `BROWSERBASE_API_KEY` present, retry through Browserbase session.
 
 ## Dependencies
-- [./answer-planner.md](./answer-planner.md),
+- [./answer-planner-IN_REVIEW.md](./answer-planner-IN_REVIEW.md),
 - [../shared-infra/errors-artifacts-IN_REVIEW.md](../shared-infra/errors-artifacts-IN_REVIEW.md),
 - (through planner) all upstream deps.
 

@@ -1,0 +1,15 @@
+{
+  "case": "ashby/demographics",
+  "title": "Full-Stack Engineer — Nova Labs (Ashby)",
+  "fields": [
+    { "key": "full_name", "label": "Full Name", "type": "text", "required": true, "expected": "Taylor Wong" },
+    { "key": "email", "label": "Email", "type": "text", "required": true, "expected": "taylor.wong@agentmail.to" },
+    { "key": "resume", "label": "Resume", "type": "file", "required": true, "expected": "Taylor Wong Resume.pdf" },
+    { "key": "cover_letter", "label": "Cover Letter", "type": "textarea", "required": false, "expected": "@generated@" },
+    { "key": "interests", "label": "Which areas interest you? (select all that apply)", "type": "checkbox-group", "required": false, "expected": ["Backend", "Machine Learning"] },
+    { "key": "veteran_status", "label": "Veteran Status", "type": "select", "required": false, "expected": "I am not a protected veteran" },
+    { "key": "disability_status", "label": "Disability Status", "type": "select", "required": false, "expected": "No, I do not have a disability" },
+    { "key": "gender", "label": "Gender", "type": "select", "required": false, "expected": "Male" },
+    { "key": "why_fit", "label": "Why are you a good fit for this role?", "type": "textarea", "required": true, "expected": "@generated@" }
+  ]
+}

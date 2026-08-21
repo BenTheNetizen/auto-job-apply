@@ -1,0 +1,16 @@
+{
+  "case": "greenhouse/demographics",
+  "title": "Site Reliability Engineer — Orbital Cloud (Greenhouse)",
+  "fields": [
+    { "key": "full_name", "label": "Full Name", "type": "text", "required": true, "expected": "Taylor Wong" },
+    { "key": "email", "label": "Email", "type": "text", "required": true, "expected": "taylor.wong@agentmail.to" },
+    { "key": "resume", "label": "Resume", "type": "file", "required": true, "expected": "Taylor Wong Resume.pdf" },
+    { "key": "interests", "label": "Which areas interest you? (select all that apply)", "type": "checkbox-group", "required": false, "expected": ["Backend", "Machine Learning"] },
+    { "key": "relocation", "label": "Are you willing to relocate?", "type": "radio", "required": true, "expected": "Yes" },
+    { "key": "salary_expectation", "label": "Salary Expectation", "type": "text", "required": false, "expected": "180000" },
+    { "key": "veteran_status", "label": "Veteran Status", "type": "select", "required": false, "expected": "I am not a protected veteran" },
+    { "key": "disability_status", "label": "Disability Status", "type": "select", "required": false, "expected": "No, I do not have a disability" },
+    { "key": "gender", "label": "Gender", "type": "select", "required": false, "expected": "Male" },
+    { "key": "why_fit", "label": "Why are you a good fit for this role?", "type": "textarea", "required": true, "expected": "@generated@" }
+  ]
+}

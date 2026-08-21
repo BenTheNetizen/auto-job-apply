@@ -1,0 +1,18 @@
+question_key,answer,source,updated_at
+full_name,Taylor Wong,manual,2026-08-21T00:00:00Z
+email,taylor.wong@agentmail.to,manual,2026-08-21T00:00:00Z
+phone,415-555-0132,manual,2026-08-21T00:00:00Z
+linkedin_url,https://linkedin.com/in/taylorwong,manual,2026-08-21T00:00:00Z
+github_url,https://github.com/taylorwong,manual,2026-08-21T00:00:00Z
+website,https://taylorwong.dev,manual,2026-08-21T00:00:00Z
+resume_path,data/Taylor Wong Resume.pdf,manual,2026-08-21T00:00:00Z
+work_authorization,Yes,manual,2026-08-21T00:00:00Z
+visa_sponsorship,No,manual,2026-08-21T00:00:00Z
+relocation,Yes,manual,2026-08-21T00:00:00Z
+start_date,2026-09-01,manual,2026-08-21T00:00:00Z
+salary_expectation,180000,manual,2026-08-21T00:00:00Z
+referral_source,Job board,manual,2026-08-21T00:00:00Z
+veteran_status,I am not a protected veteran,manual,2026-08-21T00:00:00Z
+disability_status,"No, I do not have a disability",manual,2026-08-21T00:00:00Z
+gender,Male,manual,2026-08-21T00:00:00Z
+interests,"Backend;Machine Learning",manual,2026-08-21T00:00:00Z

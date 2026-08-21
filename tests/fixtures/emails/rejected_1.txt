@@ -1,0 +1,10 @@
+Subject: Update on your application to Acme
+
+Hi Taylor,
+
+Thank you for applying to the Senior Engineer role at Acme. After careful
+consideration, we have decided to move forward with other candidates whose
+experience more closely matches this position. Unfortunately, we will not
+be moving forward with your application at this time.
+
+We wish you the best in your search.

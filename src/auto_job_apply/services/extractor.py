@@ -52,6 +52,12 @@ FieldType = Literal[
     "unknown",
 ]
 
+# Canonical separator for multi-value answers (checkbox-group). The planner
+# prompt instructs the LLM to use it, the filler splits on it, and profile
+# fixtures store it. ("pipe" wins over comma/semicolon because option labels
+# legitimately contain both of the latter.)
+MULTI_VALUE_SEP = "|"
+
 # input[type=...] values mapped onto the normalized FieldType vocabulary.
 _INPUT_TYPE_MAP: dict[str, FieldType] = {
     "text": "text",
@@ -365,6 +371,7 @@ __all__ = [
     "ApplicationForm",
     "Field",
     "FieldType",
+    "MULTI_VALUE_SEP",
     "discover_fields",
     "extract",
     "field_key",

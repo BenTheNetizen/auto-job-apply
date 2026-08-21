@@ -63,7 +63,7 @@ class TestDetect:
 class TestBaseSelectors:
     def test_shape(self, plugin):
         selectors = plugin.base_selectors()
-        assert selectors["form"] == "#application form"
+        assert selectors["form_root"] == "#application form"
         assert selectors["required_label_marker"] == "span.asterisk"
         assert selectors["required_attr_marker"] == "[required]"
         assert "select2_widget" in selectors

@@ -103,7 +103,7 @@ def test_mock_profile_covers_profile_sourced_gold_answers():
                 continue
             assert f.key in profile, f"{case}/{f.key}: missing from mock profile"
             if isinstance(f.expected, list):
-                profile_vals = set(profile[f.key].split(";"))
+                profile_vals = set(profile[f.key].split("|"))
                 assert set(f.expected) <= profile_vals, (
                     f"{case}/{f.key}: {f.expected} not in profile {profile_vals}"
                 )

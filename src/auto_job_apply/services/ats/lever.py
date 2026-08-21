@@ -48,8 +48,9 @@ class LeverPlugin:
         """
         return {
             # Form root; ``div.application-form form`` preferred, generic
-            # ``form`` tolerated for older postings.
-            "form": "div.application-form form, form",
+            # ``form`` tolerated for older postings. The extractor reads
+            # the ``form_root`` key.
+            "form_root": "div.application-form form, form",
             # Accordion section headers revealed by ``pre_extract``.
             "accordion_toggle": ".toggle",
             # Label element strategy (lever labels wrap their inputs, so use
@@ -95,6 +96,6 @@ class LeverPlugin:
 
 
 
-PLUGIN = register(LeverPlugin())
+plugin = register(LeverPlugin())
 
-__all__ = ["LeverPlugin", "PLUGIN"]
+__all__ = ["LeverPlugin", "plugin"]

@@ -354,7 +354,7 @@ def _register_local_plugins() -> None:
     ats_registry._ensure_plugins_loaded()
     for name, module in (("ashby", "ashby"), ("greenhouse", "greenhouse"), ("lever", "lever")):
         mod = __import__(f"auto_job_apply.services.ats.{module}", fromlist=["x"])
-        singleton = getattr(mod, "plugin", None) or getattr(mod, "PLUGIN", None)
+        singleton = getattr(mod, "plugin", None)
         wrapper = _LocalPlugin(name, singleton)
         register(wrapper)
     logger.info("eval: registered localhost plugin wrappers")

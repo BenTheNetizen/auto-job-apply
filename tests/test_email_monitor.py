@@ -469,3 +469,89 @@ class TestUnknownStatusKeepsRow:
         assert row is not None
         assert row.status == "submitted"  # NOT clobbered by 'unknown'
         assert [e.status for e in row.status_history_json] == ["unknown"]
+
+
+class TestPreSubmitStatusNotWedged:
+    """Email classifications must never overwrite a pre-submit pipeline state
+    (needs_review / ready_to_submit / in_progress) — the review gate keys on
+    top-level status, so history-only append keeps submission unblocked."""
+
+    def test_email_on_ready_to_submit_row_goes_to_history_only(
+        self, paths: dict[str, Path], monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from auto_job_apply.services import status_parser
+
+        _seed_app(paths["apps"])
+        # Flip the seeded row into a pre-submit pipeline state.
+        row = applications_store(paths["apps"]).get("app-1")
+        assert row is not None
+        applications_store(paths["apps"]).update(
+            "app-1", row.model_copy(update={"status": "ready_to_submit"})
+        )
+
+        monkeypatch.setattr(
+            email_monitor,
+            "parse",
+            lambda s, b: status_parser.ParsedStatus(
+                status=status_parser.ApplicationStatus.acknowledged,
+                confidence=0.9,
+                raw_snippet="thanks for applying",
+            ),
+        )
+        msg = IncomingMessage(
+            message_id="pre-1",
+            subject="Application received",
+            text="Thanks for applying, we'll be in touch.",
+            from_address="noreply@ashbyhq.com",
+            headers={"x-application-id": "app-1"},
+        )
+        client = FakeClient([])
+        result = handle_message(
+            msg,
+            client=client,
+            inbox_id="taylor.wong@agentmail.to",
+            ledger_path=paths["ledger"],
+            apps_path=paths["apps"],
+        )
+        assert result.outcome == "updated"
+        row2 = applications_store(paths["apps"]).get("app-1")
+        assert row2 is not None
+        assert row2.status == "ready_to_submit"  # gate unwedged
+        assert row2.status_history_json[-1].status == "acknowledged"
+
+    def test_email_on_post_submit_row_still_updates_top_level(
+        self, paths: dict[str, Path], monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        # Pipeline states past submission (submitted/failed/on_hold) remain
+        # fully managed by email statuses.
+        from auto_job_apply.services import status_parser
+
+        _seed_app(paths["apps"])  # status="submitted"
+        monkeypatch.setattr(
+            email_monitor,
+            "parse",
+            lambda s, b: status_parser.ParsedStatus(
+                status=status_parser.ApplicationStatus.rejected,
+                confidence=0.9,
+                raw_snippet="decided to move forward with other candidates",
+            ),
+        )
+        msg = IncomingMessage(
+            message_id="post-1",
+            subject="Application update",
+            text="Unfortunately, we have decided to move forward with other candidates.",
+            from_address="noreply@ashbyhq.com",
+            headers={"x-application-id": "app-1"},
+        )
+        client = FakeClient([])
+        result = handle_message(
+            msg,
+            client=client,
+            inbox_id="taylor.wong@agentmail.to",
+            ledger_path=paths["ledger"],
+            apps_path=paths["apps"],
+        )
+        assert result.outcome == "updated"
+        row = applications_store(paths["apps"]).get("app-1")
+        assert row is not None
+        assert row.status == "rejected"

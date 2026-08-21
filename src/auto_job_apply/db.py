@@ -20,7 +20,7 @@ def get_engine() -> Engine:
     if engine is None:
         raise AutoJobApplyError(
             "Database is not configured. Set DB.url in config or via env "
-            "(e.g. PKG_DB__URL)."
+            "(e.g. AUTO_JOB_APPLY_DB__URL)."
         )
     return engine
 

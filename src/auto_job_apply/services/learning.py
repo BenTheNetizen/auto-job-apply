@@ -11,13 +11,9 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from auto_job_apply.logging import logger
 from auto_job_apply.services import profile
-
-if TYPE_CHECKING:
-    from auto_job_apply.services.llm import structured as _structured
 
 _ALIASES_PATH = Path(__file__).resolve().parent / "learning_aliases.json"
 
@@ -59,28 +55,30 @@ def canonicalize(label: str) -> str | None:
 def _canonicalize_via_llm(label: str) -> str | None:
     # Import lazily: the alias-hit path must never touch the LLM surface,
     # and this module stays importable while services/llm.py is still being
-    # built by another chain.
+    # built by another chain. Broad except: an LLM outage must degrade to
+    # None (uncanonicalized), never propagate into callers like
+    # review.edit_field (which would 500 a PATCH after persisting the edit).
     try:
         from auto_job_apply.services.llm import get_llm
         from auto_job_apply.services.llm import structured as _structured
-    except ImportError:
-        logger.debug("services.llm not yet available; LLM canonicalization skipped")
+
+        from pydantic import BaseModel
+
+        class Canonicalization(BaseModel):
+            canonical_key: str | None
+
+        runnable = _structured(get_llm(role="learning"), Canonicalization)
+        result = runnable.invoke(
+            "You map free-form job application field labels to a canonical "
+            "snake_case question key. Respond only with the canonical key if a "
+            "well-known mapping exists (e.g. 'Are you a protected veteran?' -> "
+            "veteran_status); otherwise null.\n\nLabel: " + label
+        )
+        key = getattr(result, "canonical_key", None)
+        return key if isinstance(key, str) else None
+    except Exception as exc:  # noqa: BLE001 — canonicalization is best-effort
+        logger.warning("learning: LLM canonicalization failed for %r: %s", label, exc)
         return None
-
-    from pydantic import BaseModel
-
-    class Canonicalization(BaseModel):
-        canonical_key: str | None
-
-    runnable = _structured(get_llm(role="learning"), Canonicalization)
-    result = runnable.invoke(
-        "You map free-form job application field labels to a canonical "
-        "snake_case question key. Respond only with the canonical key if a "
-        "well-known mapping exists (e.g. 'Are you a protected veteran?' -> "
-        "veteran_status); otherwise null.\n\nLabel: " + label
-    )
-    key = getattr(result, "canonical_key", None)
-    return key if isinstance(key, str) else None
 
 
 def _record_llm_draft(key: str, answer: str, path: str | Path | None = None) -> None:

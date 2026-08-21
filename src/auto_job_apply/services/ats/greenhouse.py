@@ -26,9 +26,12 @@ Greenhouse quirks handled here:
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
-from urllib.parse import urlparse
 
-from auto_job_apply.services.ats_registry import register
+from auto_job_apply.services.ats_registry import (
+    ATS_HOST_PATTERNS,
+    hostname_matches,
+    register,
+)
 
 if TYPE_CHECKING:  # Playwright is introduced by the extractor leaf.
     from playwright.sync_api import Locator, Page  # pragma: no cover
@@ -43,17 +46,15 @@ class GreenhousePlugin:
     name = "greenhouse"
 
     def detect(self, url: str) -> bool:
-        # Proper host check: handles subdomains like boards.greenhouse.io
-        # but not fakes like boards.greenhouse.io.evil.com or path substrings.
-        try:
-            host = urlparse(url).hostname or ""
-        except ValueError:
-            return False
-        return host == "boards.greenhouse.io"
+        # Shared host matcher: rejects lookalikes (boards.greenhouse.io.evil.com)
+        # and bare domains (no scheme → no host), like the other plugins.
+        return hostname_matches(url, ATS_HOST_PATTERNS["greenhouse"])
 
     def base_selectors(self) -> dict[str, str]:
         return {
-            "form": "#application form",
+            # "form_root" is the key the shared extractor reads; keep it aligned
+            # with the other plugins.
+            "form_root": "#application form",
             "field": "label",
             "required_label_marker": "span.asterisk",
             "required_attr_marker": "[required]",

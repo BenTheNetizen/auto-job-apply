@@ -29,7 +29,7 @@ Field to answer:
 Rules:
 - Answer ONLY this field. Do not include the label or any explanation.
 - For select/radio/checkbox fields, the answer MUST be exactly one of the \
-listed options (for checkbox-group, comma-separate multiple options).
+listed options (for checkbox-group, pipe-separate multiple options with `|`).
 - For short-answer/free-text fields, write a concise, specific answer (2-4 \
 sentences) that references the organization ({org}), the role ({role}), and \
 the applicant's background from the profile. Speak in first person as the \

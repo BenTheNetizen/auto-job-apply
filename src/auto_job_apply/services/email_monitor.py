@@ -199,14 +199,22 @@ def handle_message(
         raw_snippet=parsed.raw_snippet,
         at=datetime.now(timezone.utc),
     )
-    update_top_level = parsed.status is not ApplicationStatus.unknown
+    update_top_level = (
+        parsed.status is not ApplicationStatus.unknown
+        # Email classifications must never wedge a pre-submit pipeline state:
+        # the review gate keys on the row's top-level status, so an email
+        # (e.g. an early auto-ack) landing on needs_review/ready_to_submit /
+        # in_progress goes to history only.
+        and app.status not in {"needs_review", "ready_to_submit", "in_progress"}
+    )
     if not update_top_level:
-        # Ambiguous LLM classification (unknown, confidence>0): record the
-        # event in history but never clobber the row's top-level status.
+        # Ambiguous LLM classification or a pre-submit pipeline row: record
+        # the event in history but never clobber the row's top-level status.
         logger.warning(
-            "message %s classified as unknown (confidence=%.2f); appending "
-            "history only, leaving top-level status %r",
+            "message %s classified=%s (confidence=%.2f) for app in status %r; "
+            "appending history only, leaving top-level status unchanged",
             msg.message_id,
+            parsed.status.value,
             parsed.confidence,
             app.status,
         )

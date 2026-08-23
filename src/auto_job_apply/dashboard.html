@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>auto-job-apply</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root { color-scheme: dark; }
+    body { font-family: -apple-system, system-ui, sans-serif; margin: 2rem auto; max-width: 960px; padding: 0 1rem; background:#0e1116; color:#e6e9ef; }
+    h1 { font-size: 1.3rem; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.9rem; }
+    th, td { text-align: left; padding: 0.45rem 0.6rem; border-bottom: 1px solid #262d38; vertical-align: top; }
+    th { color: #8b94a3; font-weight: 600; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.04em; }
+    .status { display:inline-block; padding: 0.1rem 0.55rem; border-radius: 999px; font-size: 0.78rem; font-weight: 600; }
+    .needs_review { background:#4a3200; color:#ffcf6b; }
+    .ready_to_submit { background:#0e3a24; color:#6be3a5; }
+    .submitted { background:#102d4a; color:#7db9ff; }
+    .failed { background:#4a1010; color:#ff8d8d; }
+    .muted { color:#8b94a3; }
+    .detail { background:#161b23; border-radius: 8px; padding: 1rem; margin-top: 1rem; white-space: pre-wrap; font-family: ui-monospace, monospace; font-size: 0.8rem; }
+    button { background:#234; color:#cfe3ff; border:1px solid #345; border-radius:6px; padding:0.25rem 0.7rem; cursor:pointer; font-size:0.8rem; }
+    button:hover { background:#2b4258; }
+    .refresh { float:right; }
+    a { color:#7db9ff; }
+  </style>
+</head>
+<body>
+  <h1>auto-job-apply <button class="refresh" onclick="load()">refresh</button></h1>
+  <div class="muted" id="meta"></div>
+  <table id="apps">
+    <thead><tr><th>application</th><th>ats</th><th>status</th><th>fields</th><th></th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <div class="detail" id="detail" style="display:none"></div>
+  <script>
+    async function load() {
+      const res = await fetch('/applications');
+      const data = await res.json();
+      const tbody = document.querySelector('#apps tbody');
+      tbody.innerHTML = '';
+      document.getElementById('meta').textContent = data.applications.length
+        ? `${data.applications.length} application(s) — last refresh ${new Date().toLocaleTimeString()}`
+        : `no applications yet — run scripts/fill_local.py`;
+      for (const a of data.applications) {
+        const filled = (a.fields_json || []).filter(f => f.answer).length;
+        const total = (a.fields_json || []).length;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><a href="#" onclick="show('${a.id}');return false">${a.id}</a><br><span class="muted">${a.job_url}</span></td>
+          <td>${a.ats_type}</td>
+          <td><span class="status ${a.status}">${a.status}</span></td>
+          <td>${filled}/${total} answered</td>
+          <td>
+            ${a.status === 'needs_review' ? `<button onclick="act('${a.id}','confirm')">confirm</button>` : ''}
+            ${a.status === 'ready_to_submit' ? `<button onclick="act('${a.id}','submit')">submit</button>` : ''}
+          </td>`;
+        tbody.appendChild(tr);
+      }
+    }
+    async function show(id) {
+      const res = await fetch(`/applications/${id}`);
+      const a = await res.json();
+      const el = document.getElementById('detail');
+      el.style.display = 'block';
+      el.textContent = JSON.stringify(a, null, 2);
+    }
+    async function act(id, action) {
+      await fetch(`/applications/${id}/${action}`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}' });
+      load();
+    }
+    load();
+    setInterval(load, 5000);
+  </script>
+</body>
+</html>

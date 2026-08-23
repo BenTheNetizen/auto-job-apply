@@ -26,6 +26,17 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
+@server.get("/", response_class=None)
+def dashboard():
+    """Lightweight live dashboard over the review API (v0 UI surface)."""
+    from fastapi.responses import HTMLResponse
+    from pathlib import Path
+
+    return HTMLResponse(
+        (Path(__file__).parent / "dashboard.html").read_text(encoding="utf-8")
+    )
+
+
 # --- review API (review-api-cli leaf) ------------------------------------
 
 

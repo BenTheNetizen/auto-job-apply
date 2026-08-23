@@ -47,7 +47,7 @@ def _seed(store: CsvStore[ApplicantProfileRow]) -> None:
         if store.get(key) is None:
             store.append(
                 ApplicantProfileRow(
-                    question_key=key, answer="", source="llm_draft"
+                    question_key=key, answer="", source="manual"
                 )
             )
 

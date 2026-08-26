@@ -16,3 +16,4 @@ venv/
 *.local.json
 /local/
 evals/results/
+.venv/

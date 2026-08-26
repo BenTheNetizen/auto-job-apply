@@ -130,6 +130,16 @@ class FakePlugin:
     def submit_button(self, page: Any) -> FakeLocator:
         return FakeLocator(self.submit_control)
 
+    def confirm_submission(self, page: Any):
+        """Fake verdict; exercises the settle seam (networkidle wait)."""
+        from auto_job_apply.services.confirmation import SubmissionConfirmation
+
+        try:
+            page.wait_for_load_state("networkidle")
+        except Exception:
+            pass
+        return SubmissionConfirmation.UNKNOWN
+
 
 # --- helpers -------------------------------------------------------------
 

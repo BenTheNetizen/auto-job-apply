@@ -48,6 +48,7 @@ from auto_job_apply.services.applications import (
     applications_store,
 )
 from auto_job_apply.services.ats_registry import ATSPlugin, plugin_for
+from auto_job_apply.services.confirmation import SubmissionConfirmation
 from auto_job_apply.services.email_confirmation import wait_for_confirmation
 from auto_job_apply.services.extractor import (
     MULTI_VALUE_SEP,
@@ -58,16 +59,6 @@ from auto_job_apply.services.extractor import (
 from auto_job_apply.utils import artifacts
 
 PageOpener = Callable[[str, bool, int], Any]
-
-_CONFIRM_TEXT = (
-    "thank you",
-    "application received",
-    "application submitted",
-    "successfully submitted",
-    "we'll be in touch",
-    "we will be in touch",
-)
-
 
 # --- browser seams (real browser only here; tests inject fakes) -----------
 
@@ -350,13 +341,38 @@ def submit(
     last_error: Exception | None = None
     for mode, opener in openers:
         try:
-            _submit_once(plugin, row, answers, resume_path, opener, application_id)
+            confirmation = _submit_once(
+                plugin, row, answers, resume_path, opener, application_id
+            )
         except Exception as exc:  # noqa: BLE001 — escalate, then record
             last_error = exc
-            logger.warning("filler: submit via %s failed for %s: %s", mode, application_id, exc)
+            logger.warning(
+                "filler: submit via %s failed for %s: %s", mode, application_id, exc
+            )
             continue
-        # success path
-        updated = _finalize_success(store, row)
+        if confirmation in (
+            SubmissionConfirmation.REJECTED_VALIDATION,
+            SubmissionConfirmation.REJECTED_BOT,
+        ):
+            # Post-click rejection: the employer's server answered us. This is
+            # a terminal verdict — escalate-to-browserbase would double-submit.
+            err = SubmissionError(
+                message=f"Submission rejected by ATS ({confirmation.value})",
+                context={
+                    "application_id": application_id,
+                    "confirmation": confirmation.value,
+                },
+            )
+            _finalize_failure(store, row, err)
+            raise err
+        if confirmation is SubmissionConfirmation.UNKNOWN:
+            logger.warning(
+                "filler: submitted %s via %s but confirmation signal was UNKNOWN "
+                "(no definitive success/rejection marker on the post-click page)",
+                application_id,
+                mode,
+            )
+        updated = _finalize_success(store, row, confirmation)
         logger.info("filler: submitted %s via %s", application_id, mode)
         if wait_for_email:
             _wait_for_email_confirmation(
@@ -379,7 +395,12 @@ def _submit_once(
     opener: PageOpener,
     application_id: str,
 ) -> None:
-    """Fill privately from persisted answers and click the submit control."""
+    """Fill privately from persisted answers and click the submit control.
+
+    Returns the plugin's ``SubmissionConfirmation`` verdict. Pre-click
+    failures raise (retryable via Browserbase escalation upstream); post-click
+    failures never retry — the click already hit the employer's server.
+    """
     timeout_ms = _filler_timeout_ms()
     with opener(row.job_url, _filler_headless(), timeout_ms) as page:
         plugin.pre_extract(page)
@@ -396,12 +417,20 @@ def _submit_once(
         plugin.submit_button(page).first.click()
         # Post-click failures are non-retryable: the click already hit the
         # employer's server, so escalating to Browserbase would double-submit.
-        # Confirmation artifacts are best-effort evidence only.
+        # Confirmation verdicts are recorded as status-history evidence.
+        confirmation = SubmissionConfirmation.UNKNOWN
         try:
-            _await_confirmation(page)
+            confirmation = plugin.confirm_submission(page)
+            logger.info(
+                "filler: confirmation verdict for %s: %s",
+                application_id,
+                confirmation.value,
+            )
         except Exception as exc:  # noqa: BLE001 — click already landed; warn, never retry
             logger.warning(
-                "filler: post-click confirmation check failed for %s (submission may already be on the employer server): %s",
+                "filler: post-click confirmation check failed for %s "
+                "(treating as UNKNOWN; submission may already be on the "
+                "employer server): %s",
                 application_id,
                 exc,
             )
@@ -411,8 +440,18 @@ def _submit_once(
             logger.warning(
                 "filler: submit-post snapshot failed for %s: %s", application_id, exc
             )
+        return confirmation
 
 
+def _finalize_success(
+    store: Any, row: ApplicationsRow, confirmation: SubmissionConfirmation
+) -> ApplicationsRow:
+    """Mark the row submitted; history carries the confirmation verdict."""
+    append_status(
+        row.id,
+        _event("submitted", snippet=confirmation.value),
+        path=store.path,
+    )
 def _wait_for_email_confirmation(
     application_id: str,
     applications_path: str | Path | None,
@@ -460,6 +499,7 @@ def _await_confirmation(page: Any) -> None:
 def _finalize_success(store: Any, row: ApplicationsRow) -> ApplicationsRow:
     """Mark the row submitted; best-effort event append (already persisted)."""
     append_status(row.id, _event("submitted"), path=store.path)
+
     current = store.get(row.id) or row
     fields = [dict(f, submitted=bool(f.get("answer"))) if isinstance(f, dict) else f
               for f in current.fields_json]

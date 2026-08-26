@@ -32,6 +32,10 @@ from auto_job_apply.services.ats_registry import (
     hostname_matches,
     register,
 )
+from auto_job_apply.services.confirmation import (
+    SubmissionConfirmation,
+    confirm_by,
+)
 
 if TYPE_CHECKING:  # Playwright is introduced by the extractor leaf.
     from playwright.sync_api import Locator, Page  # pragma: no cover
@@ -95,6 +99,29 @@ class GreenhousePlugin:
         Fallback select2 strategy is documented on the class docstring and
         handled by the shared extractor; the plugin surfaces the selectors.
         """
+
+    def confirm_submission(self, page: "Page") -> "SubmissionConfirmation":
+        """Greenhouse success: confirmation view/redirect or success toast;
+        validation failures show the ``.field-error`` summary."""
+        return confirm_by(
+            page,
+            redirect_patterns=(
+                "/confirmation",
+                "/confirm",
+                "/thanks",
+                "submitted",
+            ),
+            toast_selectors=(
+                "#application_confirmation",
+                ".application-confirmation",
+                ".success",
+            ),
+            validation_selectors=(
+                ".field-error",
+                ".error-explanation",
+                "#error_explanation",
+            ),
+        )
 
 
 plugin = register(GreenhousePlugin())

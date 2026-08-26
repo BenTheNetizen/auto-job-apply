@@ -27,6 +27,10 @@ from auto_job_apply.services.ats_registry import (
     hostname_matches,
     register,
 )
+from auto_job_apply.services.confirmation import (
+    SubmissionConfirmation,
+    confirm_by,
+)
 
 if TYPE_CHECKING:
     from playwright.sync_api import Locator
@@ -73,6 +77,31 @@ class AshbyPlugin:
 
     def post_fill(self, page: Any, answers: Any) -> None:
         """No Ashby-specific post-fill behavior for v0."""
+
+    def confirm_submission(self, page: Any) -> SubmissionConfirmation:
+        """Ashby success: redirect to ``/application-submitted`` (or a
+        ``submitted`` query flag) or an inline success toast; validation
+        rejections show an error list at the form head."""
+        return confirm_by(
+            page,
+            redirect_patterns=(
+                "/application-submitted",
+                "submitted=true",
+                "/thanks",
+                "/thank-you",
+                "/confirmation",
+            ),
+            toast_selectors=(
+                ".ashby-toast-success",
+                "[class*=success]",
+                "[role=status]",
+            ),
+            validation_selectors=(
+                ".ashby-error",
+                "[class*=error]",
+                "[role=alert]",
+            ),
+        )
 
 
 plugin = register(AshbyPlugin())

@@ -23,6 +23,8 @@ from auto_job_apply.errors import UnsupportedATSError
 if TYPE_CHECKING:
     from playwright.sync_api import Locator
 
+    from auto_job_apply.services.confirmation import SubmissionConfirmation
+
 ATSType = Literal["ashby", "greenhouse", "lever"]
 
 # Host patterns per ATS. Plugin ``detect`` implementations should reuse these
@@ -50,6 +52,12 @@ class ATSPlugin(Protocol):
         ...
 
     def post_fill(self, page: Any, answers: Any) -> None: ...
+
+    def confirm_submission(self, page: Any) -> "SubmissionConfirmation":
+        """Post-click machine-check: redirect → toast → validation →
+        bot → UNKNOWN. Composed via ``services.confirmation.confirm_by``.
+        """
+        ...
 
 
 def hostname_matches(url: str, patterns: tuple[str, ...]) -> bool:

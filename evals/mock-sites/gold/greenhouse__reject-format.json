@@ -1,0 +1,55 @@
+{
+  "case": "greenhouse/reject-format",
+  "title": "Data Platform Engineer — Ledgerline (Greenhouse)",
+  "reject_rules": [
+    {
+      "field": "start_date",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "error": "Start date must be in YYYY-MM-DD format"
+    }
+  ],
+  "fields": [
+    {
+      "key": "full_name",
+      "label": "Full Name",
+      "type": "text",
+      "required": true,
+      "expected": "Taylor Wong"
+    },
+    {
+      "key": "email",
+      "label": "Email",
+      "type": "text",
+      "required": true,
+      "expected": "taylor.wong@agentmail.to"
+    },
+    {
+      "key": "resume",
+      "label": "Resume",
+      "type": "file",
+      "required": true,
+      "expected": "Taylor Wong Resume.pdf"
+    },
+    {
+      "key": "start_date",
+      "label": "Earliest Start Date",
+      "type": "date",
+      "required": true,
+      "expected": "2026-09-01"
+    },
+    {
+      "key": "referral_source",
+      "label": "How did you hear about us?",
+      "type": "select",
+      "required": true,
+      "expected": "Job board"
+    },
+    {
+      "key": "why_fit",
+      "label": "Why are you a good fit for this role?",
+      "type": "textarea",
+      "required": true,
+      "expected": "@generated@"
+    }
+  ]
+}

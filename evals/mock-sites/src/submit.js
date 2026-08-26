@@ -28,8 +28,10 @@ export function collectFields(form) {
 }
 
 /**
- * POST the submission to the dev-server plugin endpoint, which records it to
- * submissions/ for the eval runner to score.
+ * POST the submission to the dev-server plugin endpoint. Never throws on a
+ * non-2xx response: the caller branches on ``status`` to render the toast,
+ * redirect, error-summary, or bot-block outcome (the server enforces the
+ * per-case behavior from gold/<case>.json).
  */
 export async function postSubmission(ats, caseId, fields) {
   const applicationId = `${ats}/${caseId}`;
@@ -38,6 +40,11 @@ export async function postSubmission(ats, caseId, fields) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ applicationId, fields }),
   });
-  if (!res.ok) throw new Error(`submit failed: ${res.status}`);
-  return res.json();
+  let body = {};
+  try {
+    body = await res.json();
+  } catch {
+    body = {};
+  }
+  return { status: res.status, ok: res.ok, ...body };
 }

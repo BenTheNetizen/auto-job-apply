@@ -5,6 +5,7 @@ import { CASES } from "./cases.js";
 import AshbyPage from "./AshbyPage.jsx";
 import GreenhousePage from "./GreenhousePage.jsx";
 import LeverPage from "./LeverPage.jsx";
+import { ConfirmationView } from "./Feedback.jsx";
 import "./styles.css";
 
 const PAGES = { ashby: AshbyPage, greenhouse: GreenhousePage, lever: LeverPage };
@@ -15,6 +16,13 @@ function CaseRoute({ ats }) {
   if (!def) return <div>Unknown case: {ats}/{caseId}</div>;
   const Page = PAGES[ats];
   return <Page caseId={caseId} def={def} />;
+}
+
+function ConfirmationRoute() {
+  const { ats, caseId } = useParams();
+  const def = CASES[ats]?.[caseId];
+  if (!def) return <div>Unknown case: {ats}/{caseId}</div>;
+  return <ConfirmationView ats={ats} title={def.title} />;
 }
 
 function Home() {
@@ -47,6 +55,7 @@ createRoot(document.getElementById("root")).render(
       <Route path="/ashby/:caseId" element={<CaseRoute ats="ashby" />} />
       <Route path="/greenhouse/:caseId" element={<CaseRoute ats="greenhouse" />} />
       <Route path="/lever/:caseId" element={<CaseRoute ats="lever" />} />
+      <Route path="/:ats/:caseId/confirmation" element={<ConfirmationRoute />} />
     </Routes>
   </BrowserRouter>
 );

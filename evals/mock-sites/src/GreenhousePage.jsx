@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Field } from "./fields.jsx";
-import { collectFields, postSubmission } from "./submit.js";
+import { useSubmitFlow } from "./useSubmitFlow.js";
+import { BotBlock, ErrorSummary, Toast } from "./Feedback.jsx";
 
 /**
  * Greenhouse-shaped form: `#application` wrapper, `span.asterisk` required
@@ -69,14 +70,9 @@ function Select2Field({ field }) {
 
 export default function GreenhousePage({ caseId, def }) {
   const [expanded, setExpanded] = useState(false);
-  const [result, setResult] = useState(null);
+  const { phase, error, extraField, handleSubmit } = useSubmitFlow("greenhouse", caseId);
 
-  async function onSubmit(e) {
-    e.preventDefault();
-    const fields = collectFields(e.target);
-    const res = await postSubmission("greenhouse", caseId, fields);
-    setResult(res);
-  }
+  if (phase === "blocked") return <BotBlock />;
 
   const demographics = def.fields.filter((f) =>
     ["veteran_status", "disability_status", "gender"].includes(f.key)
@@ -87,7 +83,7 @@ export default function GreenhousePage({ caseId, def }) {
     <div className="ats-greenhouse">
       <h1>{def.title}</h1>
       <div id="application">
-        <form onSubmit={onSubmit}>
+        <form onSubmit={handleSubmit}>
           {main.map((f) =>
             def.select2 && f.type === "select" ? (
               <Select2Field key={f.key} field={f} />
@@ -114,14 +110,12 @@ export default function GreenhousePage({ caseId, def }) {
                 )}
             </div>
           )}
+          {extraField && <Field key={extraField.key} field={extraField} />}
           <input type="submit" value="Submit Application" />
         </form>
       </div>
-      {result && (
-        <div className="confirmation" data-testid="confirmation">
-          Application received. Confirmation id: {result.applicationId}
-        </div>
-      )}
+      <ErrorSummary ats="greenhouse" error={error} />
+      {phase === "toast" && <Toast ats="greenhouse" />}
     </div>
   );
 }

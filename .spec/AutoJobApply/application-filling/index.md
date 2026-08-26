@@ -7,7 +7,7 @@
 Given a job URL on Ashby, Greenhouse, or Lever: extract the form, draft answers from the applicant profile + LLM, fill the form deterministically, capture screenshots, and gate submission behind the review policy. URLs for any other ATS are put on hold (`status=on_hold`).
 
 ## Design Decisions Specific to This Subsystem
-- Plugin per ATS under `application-filling-COMPLETED/ats-plugins-COMPLETED/`; plugins own selectors/quirks only — extraction/planning/submission logic is shared.
+- Plugin per ATS under `application-filling/ats-plugins-COMPLETED/`; plugins own selectors/quirks only — extraction/planning/submission logic is shared.
 - `applications.csv` rows carry `fields_json` (list of extracted+answered fields) and `status_history_json`.
 - Required fields with no confident answer are never guessed; the application goes to `needs_review`.
 - Submission runs through the review API/CLI so a human (or the verifying agent) confirms first.

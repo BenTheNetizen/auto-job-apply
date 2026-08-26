@@ -40,7 +40,7 @@ evals: mock Ashby/Greenhouse/Lever sites ──► filler ──► Langfuse eva
 - [applicant-profile](./applicant-profile-COMPLETED/index.md)
   - profile-csv — depends on: csv-store
   - self-learning-store — depends on: profile-csv, llm-openrouter
-- [application-filling](./application-filling-COMPLETED/index.md)
+- [application-filling](./application-filling/index.md)
   - ats-registry — depends on: errors-artifacts
   - ats-plugins-COMPLETED/ashby — depends on: ats-registry
   - ats-plugins-COMPLETED/greenhouse — depends on: ats-registry
@@ -49,7 +49,7 @@ evals: mock Ashby/Greenhouse/Lever sites ──► filler ──► Langfuse eva
   - answer-planner — depends on: field-extractor, profile-csv, self-learning-store, llm-openrouter
   - filler-submitter — depends on: answer-planner, errors-artifacts
   - review-api-cli — depends on: filler-submitter, self-learning-store
-- [email-monitoring](./email-monitoring-COMPLETED/index.md)
+- [email-monitoring](./email-monitoring/index.md)
   - status-parser — depends on: llm-openrouter
   - replay-safety — depends on: csv-store
   - agentmail-poll — depends on: status-parser, replay-safety, errors-artifacts
@@ -61,9 +61,9 @@ evals: mock Ashby/Greenhouse/Lever sites ──► filler ──► Langfuse eva
 ## 6. Child Specs
 - [shared-infra](./shared-infra-COMPLETED/index.md) — config surface, CSV engine, LLM/OpenRouter client, Langfuse tracing, errors/artifacts
 - [applicant-profile](./applicant-profile-COMPLETED/index.md) — profile CSV + self-learning question→answer store
-- [application-filling](./application-filling-COMPLETED/index.md) — ATS registry/plugins, field extraction, answer planning, fill/submit, review API+CLI
-- [email-monitoring](./email-monitoring-COMPLETED/index.md) — AgentMail poll, status parsing, replay safety
+- [application-filling](./application-filling/index.md) — ATS registry/plugins, field extraction, answer planning, fill/submit, review API+CLI
+- [email-monitoring](./email-monitoring/index.md) — AgentMail poll, status parsing, replay safety
 
 ## Open Questions
 - Mock-eval React app tooling: Vite assumed; adjust in [evals/mock-sites](./evals/mock-sites-COMPLETED.md) if user prefers CRA/Next.
-- Whether the email poll loop runs in-process with the API server or as `auto_job_apply email-monitor`: decided in [email-monitoring-COMPLETED/agentmail-poll](./email-monitoring-COMPLETED/agentmail-poll-COMPLETED.md) leaf (separate run command preferred).
+- Whether the email poll loop runs in-process with the API server or as `auto_job_apply email-monitor`: decided in [email-monitoring/agentmail-poll](./email-monitoring/agentmail-poll-COMPLETED.md) leaf (separate run command preferred).

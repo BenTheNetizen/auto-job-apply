@@ -16,8 +16,8 @@ Run the real filler against the mock sites, score required-field completion and 
 
 ## Dependencies
 - [./mock-sites-COMPLETED.md](./mock-sites-COMPLETED.md),
-- [../application-filling-COMPLETED/filler-submitter-COMPLETED.md](../application-filling-COMPLETED/filler-submitter-COMPLETED.md),
-- [../application-filling-COMPLETED/review-api-cli-COMPLETED.md](../application-filling-COMPLETED/review-api-cli-COMPLETED.md),
+- [../application-filling/filler-submitter-COMPLETED.md](../application-filling/filler-submitter-COMPLETED.md),
+- [../application-filling/review-api-cli-COMPLETED.md](../application-filling/review-api-cli-COMPLETED.md),
 - [../shared-infra-COMPLETED/langfuse-tracing-COMPLETED.md](../shared-infra-COMPLETED/langfuse-tracing-COMPLETED.md).
 
 ## Acceptance Criteria

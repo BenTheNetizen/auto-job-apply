@@ -17,6 +17,6 @@ Prove field-completion fidelity without touching the internet: static mock Ashby
 - [live-fire-smoke](./live-fire-smoke.md) — stretch: real posting via Browserbase with mock identity
 
 ## Dependencies
-- [application-filling-COMPLETED/filler-submitter](../application-filling-COMPLETED/filler-submitter-COMPLETED.md)
-- [application-filling-COMPLETED/review-api-cli](../application-filling-COMPLETED/review-api-cli-COMPLETED.md)
+- [application-filling/filler-submitter](../application-filling/filler-submitter-COMPLETED.md)
+- [application-filling/review-api-cli](../application-filling/review-api-cli-COMPLETED.md)
 - [shared-infra-COMPLETED/langfuse-tracing](../shared-infra-COMPLETED/langfuse-tracing-COMPLETED.md)

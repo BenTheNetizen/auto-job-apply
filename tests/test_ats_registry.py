@@ -45,6 +45,12 @@ class StubPlugin:
     def post_fill(self, page: Any, answers: Any) -> None:
         return None
 
+    def confirm_submission(self, page: Any) -> Any:
+        """Minimal plugin stub satisfies the extended protocol."""
+        from auto_job_apply.services.confirmation import SubmissionConfirmation
+
+        return SubmissionConfirmation.UNKNOWN
+
 
 @pytest.fixture()
 def clean_registry():

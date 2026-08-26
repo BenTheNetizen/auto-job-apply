@@ -30,6 +30,10 @@ from auto_job_apply.services.ats_registry import (
     hostname_matches,
     register,
 )
+from auto_job_apply.services.confirmation import (
+    SubmissionConfirmation,
+    confirm_by,
+)
 
 
 class LeverPlugin:
@@ -93,6 +97,29 @@ class LeverPlugin:
         seam is documented.
         """
         return None
+
+    def confirm_submission(self, page: Any) -> SubmissionConfirmation:
+        """Lever success: redirect to ``/thanks`` or the ``.thank-you`` toast;
+        validation failures mark fields inline (``div.error`` summary)."""
+        return confirm_by(
+            page,
+            redirect_patterns=(
+                "/thanks",
+                "/thank-you",
+                "/confirmation",
+                "submitted",
+            ),
+            toast_selectors=(
+                ".thank-you",
+                ".text-success",
+                "[class*=success]",
+            ),
+            validation_selectors=(
+                "div.error",
+                ".error-message",
+                ".field-error",
+            ),
+        )
 
 
 

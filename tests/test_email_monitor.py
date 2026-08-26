@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from pathlib import Path
-from types import SimpleNamespace
+from types import ModuleType, SimpleNamespace
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -21,6 +22,27 @@ from auto_job_apply.services.email_monitor import (
     normalize_sdk_message,
     poll_once,
 )
+
+
+@pytest.fixture(autouse=True)
+def fake_llm_module(monkeypatch: pytest.MonkeyPatch) -> ModuleType:
+    """Hermetic LLM match tier for every test: default = no match, no network.
+
+    email_monitor imports services.llm lazily at call time, so patching
+    sys.modules intercepts it. Per-test overrides set
+    ``fake.structured.return_value.invoke.return_value`` / ``side_effect``.
+    """
+    import sys
+
+    fake = ModuleType("auto_job_apply.services.llm")
+    runnable = MagicMock()
+    runnable.invoke.return_value = SimpleNamespace(
+        application_id=None, match_confidence=0.0
+    )
+    fake.structured = MagicMock(return_value=runnable)  # type: ignore[attr-defined]
+    fake.get_llm = MagicMock(return_value=object())  # type: ignore[attr-defined]
+    monkeypatch.setitem(sys.modules, "auto_job_apply.services.llm", fake)
+    return fake
 
 
 # ---------------------------------------------------------------------------
@@ -169,6 +191,111 @@ class TestMatching:
             from_address="spam@elsewhere.net",
         )
         assert match_application(msg, paths["apps"]) is None
+
+
+class TestLlmMatch:
+    """Tier 4: cheap LLM match when deterministic rules miss."""
+
+    def _rule_missing_msg(self) -> IncomingMessage:
+        # org slug 'acme' absent from sender/subject; title absent from subject.
+        return IncomingMessage(
+            message_id="mx",
+            subject="interview availability this week",
+            text="Can you do Thursday at 2pm?",
+            from_address="someone@unknown.io",
+        )
+
+    def _set_llm_result(
+        self, fake_llm_module: ModuleType, application_id, confidence
+    ) -> None:
+        fake_llm_module.structured.return_value.invoke.return_value = (
+            SimpleNamespace(
+                application_id=application_id, match_confidence=confidence
+            )
+        )
+
+    def test_llm_match_applied_above_threshold(
+        self, paths: dict[str, Path], fake_llm_module: ModuleType
+    ) -> None:
+        _seed_app(paths["apps"], app_id="app-9")
+        self._set_llm_result(fake_llm_module, "app-9", 0.9)
+        row = match_application(self._rule_missing_msg(), paths["apps"])
+        assert row is not None and row.id == "app-9"
+        fake_llm_module.get_llm.assert_called_once_with(role="match")
+
+    def test_llm_match_at_threshold_not_applied(
+        self, paths: dict[str, Path], fake_llm_module: ModuleType
+    ) -> None:
+        _seed_app(paths["apps"], app_id="app-9")
+        self._set_llm_result(fake_llm_module, "app-9", 0.6)
+        assert match_application(self._rule_missing_msg(), paths["apps"]) is None
+
+    def test_llm_match_below_threshold_not_applied(
+        self, paths: dict[str, Path], fake_llm_module: ModuleType
+    ) -> None:
+        _seed_app(paths["apps"], app_id="app-9")
+        self._set_llm_result(fake_llm_module, "app-9", 0.4)
+        assert match_application(self._rule_missing_msg(), paths["apps"]) is None
+
+    def test_llm_match_null_id_not_applied(
+        self, paths: dict[str, Path], fake_llm_module: ModuleType
+    ) -> None:
+        _seed_app(paths["apps"], app_id="app-9")
+        self._set_llm_result(fake_llm_module, None, 0.95)
+        assert match_application(self._rule_missing_msg(), paths["apps"]) is None
+
+    def test_llm_match_unknown_id_ignored(
+        self, paths: dict[str, Path], fake_llm_module: ModuleType
+    ) -> None:
+        _seed_app(paths["apps"], app_id="app-9")
+        self._set_llm_result(fake_llm_module, "ghost-app", 0.99)
+        assert match_application(self._rule_missing_msg(), paths["apps"]) is None
+
+    def test_llm_failure_degrades_to_unmatched(
+        self, paths: dict[str, Path], fake_llm_module: ModuleType
+    ) -> None:
+        _seed_app(paths["apps"], app_id="app-9")
+        fake_llm_module.structured.return_value.invoke.side_effect = RuntimeError(
+            "openrouter down"
+        )
+        assert match_application(self._rule_missing_msg(), paths["apps"]) is None
+
+    def test_rules_short_circuit_llm(
+        self, paths: dict[str, Path], fake_llm_module: ModuleType
+    ) -> None:
+        _seed_app(paths["apps"], job_url="https://jobs.lever.co/acme/xyz")
+        msg = IncomingMessage(
+            message_id="mx", subject="hello", from_address="jane@acme.com"
+        )
+        assert match_application(msg, paths["apps"]) is not None
+        fake_llm_module.structured.assert_not_called()
+
+    def test_handle_message_llm_match_pipeline(
+        self, paths: dict[str, Path], fake_llm_module: ModuleType
+    ) -> None:
+        _seed_app(paths["apps"])
+        self._set_llm_result(fake_llm_module, "app-1", 0.85)
+        sdk_msg = _sdk_message(
+            "mllm",
+            "interview availability this week",
+            "Unfortunately, we have decided to move forward with other candidates.",
+            from_="someone@unknown.io",
+        )
+        client = FakeClient([sdk_msg])
+        result = handle_message(
+            normalize_sdk_message(sdk_msg),
+            client=client,
+            inbox_id="taylor.wong@agentmail.to",
+            ledger_path=paths["ledger"],
+            apps_path=paths["apps"],
+        )
+        assert result.outcome == "updated"
+        assert result.application_id == "app-1"
+        assert result.status == "rejected"
+        assert replay_ledger.is_processed("mllm", paths["ledger"])
+        assert client.inboxes.messages.update_calls == [
+            ("mllm", {"remove_labels": ["unread"]})
+        ]
 
 
 class TestHandleMessage:

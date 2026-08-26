@@ -106,14 +106,83 @@ def _sender_domain(from_address: str) -> str:
     return addr.rsplit("@", 1)[-1] if "@" in addr else ""
 
 
+class _LlmMatch(BaseModel):
+    """Structured result from the LLM match tier."""
+
+    application_id: str | None = None
+    match_confidence: float = 0.0
+
+
+LLM_MATCH_CONFIDENCE_THRESHOLD = 0.6
+_LLM_BODY_LIMIT = 2000
+
+
+def _llm_match(msg: IncomingMessage, rows: list[ApplicationsRow]) -> ApplicationsRow | None:
+    """Tier 4: cheap LLM match when deterministic rules miss.
+
+    Sends subject + (truncated) body + a compact application catalog
+    (id/org/title) to the role='match' model (deepseek-v4-flash via the
+    LLM.match_model override) and applies the match only when confidence
+    exceeds the threshold. Any failure degrades to None (caller leaves the
+    message unread) — matching must never crash the poll loop.
+    """
+    if not rows:
+        return None
+    try:
+        from auto_job_apply.services.llm import get_llm, structured
+    except ImportError:
+        logger.debug("services.llm unavailable; LLM match tier skipped")
+        return None
+
+    catalog = "\n".join(
+        f"- id={row.id} org={_org_slug(row.job_url)!r} "
+        f"title={(row.job_title or '')!r} url={row.job_url}"
+        for row in rows
+    )
+    prompt = (
+        "Match this recruiter email to at most one job application below. "
+        "Return the application's id with your confidence (0-1) only when the "
+        "email clearly refers to that application; return application_id null "
+        "for newsletters, marketing, or ambiguous mail.\n\n"
+        f"Subject: {msg.subject}\n"
+        f"Body: {msg.text[:_LLM_BODY_LIMIT]}\n\n"
+        f"Applications:\n{catalog}"
+    )
+    try:
+        result = structured(get_llm(role="match"), _LlmMatch).invoke(prompt)
+    except Exception:  # noqa: BLE001 - LLM outage must not kill matching
+        logger.warning("LLM match failed for message %s", msg.message_id, exc_info=True)
+        return None
+
+    app_id = getattr(result, "application_id", None)
+    try:
+        confidence = float(getattr(result, "match_confidence", 0.0) or 0.0)
+    except (TypeError, ValueError):
+        confidence = 0.0
+    if not app_id or confidence <= LLM_MATCH_CONFIDENCE_THRESHOLD:
+        return None
+    for row in rows:
+        if row.id == app_id:
+            logger.info(
+                "LLM matched message %s to application %s (confidence=%.2f)",
+                msg.message_id,
+                app_id,
+                confidence,
+            )
+            return row
+    logger.warning("LLM matched unknown application id %r; ignoring", app_id)
+    return None
+
+
 def match_application(
     msg: IncomingMessage, apps_path: str | Path | None = None
 ) -> ApplicationsRow | None:
     """Match a message to an application row.
 
     Priority: explicit application id (header/subject token) -> org match
-    (sender domain or subject vs job_url org slug) -> job title substring.
-    Returns None when nothing matches (caller leaves the message unread).
+    (sender domain or subject vs job_url org slug) -> job title substring ->
+    cheap LLM match. Returns None when nothing matches (caller leaves the
+    message unread).
     """
     store = applications_store(apps_path)
 
@@ -128,10 +197,12 @@ def match_application(
             return row
         logger.warning("explicit application id %r not found", explicit)
 
+    rows = store.read_all()
+
     # 2. Org match via sender domain or subject.
     domain = _sender_domain(msg.from_address)
     subject_l = msg.subject.lower()
-    for row in store.read_all():
+    for row in rows:
         org = _org_slug(row.job_url)
         if not org:
             continue
@@ -143,12 +214,13 @@ def match_application(
             return row
 
     # 3. Job-title substring in subject.
-    for row in store.read_all():
+    for row in rows:
         title = (row.job_title or "").strip().lower()
         if title and title in subject_l:
             return row
 
-    return None
+    # 4. Cheap LLM match (role='match'; LLM.match_model override).
+    return _llm_match(msg, rows)
 
 
 # ---------------------------------------------------------------------------

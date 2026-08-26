@@ -28,8 +28,9 @@ export function collectFields(form) {
 }
 
 /**
- * POST the submission to the dev-server plugin endpoint, which records it to
- * submissions/ for the eval runner to score.
+ * POST the submission to the dev-server plugin endpoint. Never throws:
+ * returns { status, ok, ...body } so pages can drive toast vs. redirect
+ * confirmations, 422 validation/progressive flows, and 403 bot blocks.
  */
 export async function postSubmission(ats, caseId, fields) {
   const applicationId = `${ats}/${caseId}`;
@@ -38,6 +39,11 @@ export async function postSubmission(ats, caseId, fields) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ applicationId, fields }),
   });
-  if (!res.ok) throw new Error(`submit failed: ${res.status}`);
-  return res.json();
+  let body = {};
+  try {
+    body = await res.json();
+  } catch {
+    /* non-JSON body (shouldn't happen) */
+  }
+  return { status: res.status, ok: res.ok, ...body };
 }

@@ -17,6 +17,21 @@ function CaseRoute({ ats }) {
   return <Page caseId={caseId} def={def} />;
 }
 
+function ConfirmationView() {
+  const { ats, caseId } = useParams();
+  return (
+    <div className={`ats-${ats} confirmation-page`}>
+      <h1>Application submitted</h1>
+      <p>
+        Thank you for applying. Your application has been received.
+      </p>
+      <p className="confirmation-id">
+        Confirmation id: {ats}/{caseId}
+      </p>
+    </div>
+  );
+}
+
 function Home() {
   return (
     <div>
@@ -44,6 +59,7 @@ createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/:ats/:caseId/confirmation" element={<ConfirmationView />} />
       <Route path="/ashby/:caseId" element={<CaseRoute ats="ashby" />} />
       <Route path="/greenhouse/:caseId" element={<CaseRoute ats="greenhouse" />} />
       <Route path="/lever/:caseId" element={<CaseRoute ats="lever" />} />

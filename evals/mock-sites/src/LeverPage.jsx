@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Field } from "./fields.jsx";
-import { collectFields, postSubmission } from "./submit.js";
+import { useSubmitFlow } from "./useSubmitFlow.js";
+import { ErrorSummary, BotBlock, ConfirmationToast } from "./Feedback.jsx";
 
 /**
  * Lever-shaped form: `div.application-form` wrapper, optional accordion
@@ -25,14 +26,10 @@ function AccordionSection({ heading, fields }) {
 }
 
 export default function LeverPage({ caseId, def }) {
-  const [result, setResult] = useState(null);
-
-  async function onSubmit(e) {
-    e.preventDefault();
-    const fields = collectFields(e.target);
-    const res = await postSubmission("lever", caseId, fields);
-    setResult(res);
-  }
+  const { result, error, blocked, extraFields, onSubmit } = useSubmitFlow(
+    "lever",
+    caseId
+  );
 
   return (
     <div className="ats-lever">
@@ -47,15 +44,13 @@ export default function LeverPage({ caseId, def }) {
                   fields={s.fields}
                 />
               ))
-            : def.fields.map((f) => <Field key={f.key} field={f} />)}
+            : def.fields.concat(extraFields).map((f) => <Field key={f.key} field={f} />)}
           <button type="submit">Submit</button>
         </form>
       </div>
-      {result && (
-        <div className="confirmation" data-testid="confirmation">
-          Application received. Confirmation id: {result.applicationId}
-        </div>
-      )}
+      <ErrorSummary ats="lever" error={error} />
+      {blocked && <BotBlock />}
+      <ConfirmationToast result={result} />
     </div>
   );
 }

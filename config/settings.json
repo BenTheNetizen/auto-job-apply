@@ -4,7 +4,9 @@
     "API": {
       "host": "0.0.0.0",
       "port": 8000,
-      "cors": ["*"]
+      "cors": [
+        "*"
+      ]
     },
     "DB": {
       "url": null
@@ -23,7 +25,10 @@
     },
     "EMAIL": {
       "poll_interval_seconds": 300,
-      "account": "taylor.wong@agentmail.to"
+      "account": "taylor.wong@agentmail.to",
+      "confirmation_wait_enabled": true,
+      "confirmation_timeout_seconds": 600,
+      "confirmation_poll_seconds": 30
     },
     "EVALS": {
       "mock_base_url": "http://localhost:5173"

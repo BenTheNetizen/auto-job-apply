@@ -137,16 +137,27 @@ def review_confirm(application_id: str, learn_from_edits: bool) -> None:
 
 @review.command("submit")
 @click.argument("application_id")
-def review_submit(application_id: str) -> None:
+@click.option(
+    "--wait-email/--no-wait-email",
+    "wait_email",
+    default=False,
+    help="After a successful submit, poll the inbox for the employer confirmation email (bounded; outcome logged separately).",
+)
+def review_submit(application_id: str, wait_email: bool) -> None:
     if _direct():
         from auto_job_apply.services.review import submit_application
 
         _emit(submit_application(application_id).model_dump(mode="json"))
-        return
-    resp = httpx.post(f"{_api_base()}/applications/{application_id}/submit")
-    if resp.status_code in (404, 409):
-        raise click.ClickException(resp.json().get("detail", "submit failed"))
-    _emit(resp.json())
+    else:
+        resp = httpx.post(f"{_api_base()}/applications/{application_id}/submit")
+        if resp.status_code in (404, 409):
+            raise click.ClickException(resp.json().get("detail", "submit failed"))
+        _emit(resp.json())
+    if wait_email:
+        from auto_job_apply.services.email_confirmation import wait_for_confirmation
+
+        outcome = wait_for_confirmation(application_id)
+        _emit({"email_confirmation": outcome.value})
 
 
 # --- fill -----------------------------------------------------------------

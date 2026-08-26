@@ -48,6 +48,7 @@ from auto_job_apply.services.applications import (
     applications_store,
 )
 from auto_job_apply.services.ats_registry import ATSPlugin, plugin_for
+from auto_job_apply.services.email_confirmation import wait_for_confirmation
 from auto_job_apply.services.extractor import (
     MULTI_VALUE_SEP,
     ApplicationForm,
@@ -306,6 +307,8 @@ def submit(
     page_opener: PageOpener | None = None,
     browserbase_opener: PageOpener | None = None,
     applications_path: str | Path | None = None,
+    wait_for_email: bool = False,
+    email_timeout_seconds: float | None = None,
 ) -> ApplicationsRow:
     """Submit a reviewed application. Only called from the review surface.
 
@@ -316,7 +319,10 @@ def submit(
     :class:`SubmissionError` is raised.
 
     Escalation: a Playwright-level failure on the local browser triggers one
-    retry through Browserbase when ``BROWSERBASE_API_KEY`` is present.
+    retry through Browserbase when ``BROWSERBASE_API_KEY`` is present. When
+    ``wait_for_email`` is set, a successful submit is followed by a bounded
+    inbox poll for the employer's confirmation email (opt-in for sync
+    callers; outcome is logged, never affects the submitted row).
     """
     store = applications_store(applications_path)
     row = store.get(application_id)
@@ -352,6 +358,10 @@ def submit(
         # success path
         updated = _finalize_success(store, row)
         logger.info("filler: submitted %s via %s", application_id, mode)
+        if wait_for_email:
+            _wait_for_email_confirmation(
+                updated.id, applications_path, email_timeout_seconds
+            )
         return updated
 
     _finalize_failure(store, row, last_error)
@@ -401,6 +411,27 @@ def _submit_once(
             logger.warning(
                 "filler: submit-post snapshot failed for %s: %s", application_id, exc
             )
+
+
+def _wait_for_email_confirmation(
+    application_id: str,
+    applications_path: str | Path | None,
+    timeout_seconds: float | None,
+) -> None:
+    """Post-submit inbox poll; an opt-in step that must never affect the row."""
+    try:
+        outcome = wait_for_confirmation(
+            application_id,
+            timeout_seconds=timeout_seconds,
+            apps_path=applications_path,
+        )
+        logger.info("filler: email confirmation %s -> %s", application_id, outcome.value)
+    except Exception:  # noqa: BLE001 — waiting must never affect submit success
+        logger.warning(
+            "filler: email confirmation wait raised for %s",
+            application_id,
+            exc_info=True,
+        )
 
 
 def _await_confirmation(page: Any) -> None:

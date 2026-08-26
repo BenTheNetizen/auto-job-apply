@@ -1,0 +1,62 @@
+{
+  "case": "ashby/reject-format",
+  "title": "QA Engineer — Proof Labs (Ashby)",
+  "reject_rules": [
+    {
+      "field": "email",
+      "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$",
+      "error": "Email address is not formatted correctly"
+    }
+  ],
+  "fields": [
+    {
+      "key": "full_name",
+      "label": "Full Name",
+      "type": "text",
+      "required": true,
+      "expected": "Taylor Wong"
+    },
+    {
+      "key": "email",
+      "label": "Email",
+      "type": "text",
+      "required": true,
+      "expected": "taylor.wong@agentmail.to"
+    },
+    {
+      "key": "phone",
+      "label": "Phone",
+      "type": "text",
+      "required": false,
+      "expected": "415-555-0132"
+    },
+    {
+      "key": "resume",
+      "label": "Resume",
+      "type": "file",
+      "required": true,
+      "expected": "Taylor Wong Resume.pdf"
+    },
+    {
+      "key": "why_fit",
+      "label": "Why are you a good fit for this role?",
+      "type": "textarea",
+      "required": true,
+      "expected": "@generated@"
+    },
+    {
+      "key": "work_authorization",
+      "label": "Are you authorized to work in the United States?",
+      "type": "radio",
+      "required": true,
+      "expected": "Yes"
+    },
+    {
+      "key": "visa_sponsorship",
+      "label": "Will you now or in the future require visa sponsorship?",
+      "type": "radio",
+      "required": true,
+      "expected": "No"
+    }
+  ]
+}
